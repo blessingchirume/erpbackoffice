@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\User;
+use App\Models\User as ModelsUser;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -27,7 +27,7 @@ class ProfileRequest extends FormRequest
     {
         return [
             'name' => ['required', 'min:3'],
-            'email' => ['required', 'email', Rule::unique((new User)->getTable())->ignore(auth()->id())],
+            'email' => ['required', 'email', Rule::unique((new ModelsUser())->getTable())->ignore(auth()->id())],
         ];
     }
 }
