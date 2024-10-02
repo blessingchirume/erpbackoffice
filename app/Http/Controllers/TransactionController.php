@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Sale;
-use App\Client;
-use App\Provider;
+use App\Models\Client;
+use App\Models\PaymentMethod;
+use App\Models\Provider;
+use App\Models\Sale;
+use App\Models\Transaction;
 use Carbon\Carbon;
-use App\SoldProduct;
-use App\Transaction;
-use App\PaymentMethod;
+
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller

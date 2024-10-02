@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Product;
+use App\Models\Product;
+use App\Models\ProductCategory;
+use App\Models\SoldProduct;
 use Carbon\Carbon;
-use App\SoldProduct;
-use App\ProductCategory;
+
 use Illuminate\Http\Request;
 
 class InventoryController extends Controller
