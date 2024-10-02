@@ -7,6 +7,6 @@ class TransactionType extends Model
 {
     protected $fillable = ['type', 'description'];
     public function transactions() {
-        return $this->hasMany('App\Transaction');
+        return $this->hasMany('App\Models\Transaction');
     }
 }
