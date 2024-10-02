@@ -15,11 +15,11 @@ class Client extends Model
 
     public function sales()
     {
-        return $this->hasMany('App\Sale');
+        return $this->hasMany(Sale::class);
     }
 
     public function transactions()
     {
-        return $this->hasMany('App\Transaction');
+        return $this->hasMany(Transaction::class);
     }
 }

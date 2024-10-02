@@ -11,10 +11,10 @@ class SoldProduct extends Model
     
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo('App\Models\Product');
     }
     public function sale()
     {
-        return $this->belongsTo('App\Sale');
+        return $this->belongsTo('App\Models\Sale');
     }
 }

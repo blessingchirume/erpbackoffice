@@ -9,6 +9,6 @@ class PaymentMethod extends Model
     use SoftDeletes;
     protected $fillable = ['name', 'description'];
     public function transactions() {
-        return $this->hasMany('App\Transaction', 'payment_method_id', 'id');
+        return $this->hasMany(Transaction::class, 'payment_method_id', 'id');
     }
 }
