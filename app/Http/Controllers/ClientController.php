@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Sale;
-use App\Client;
-use App\Transaction;
-use App\PaymentMethod;
+
 use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
+use App\Models\Client;
+use App\Models\PaymentMethod;
 
 class ClientController extends Controller
 {

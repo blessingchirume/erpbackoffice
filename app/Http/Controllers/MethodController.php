@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PaymentMethod;
+use App\Models\Transaction;
 use Carbon\Carbon;
-use App\Transaction;
-use App\PaymentMethod;
+
 use Illuminate\Http\Request;
 
 class MethodController extends Controller
