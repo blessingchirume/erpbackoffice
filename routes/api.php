@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,7 +13,6 @@ use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ReceiptController;
-use App\Http\Controllers\SaleController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\UserController;
@@ -72,6 +72,8 @@ Route::post('/forgot-password', [AuthController::class, 'passwordReset']);
     Route::delete('inventory/receipts/{receipt}/product/{receivedproduct}', [ReceiptController::class, 'destroyproduct'])->name('receipts.product.destroy');
 
     Route::resource('sales', SaleController::class)->except(['edit', 'update']);
+    Route::post('sales/transact', [SaleController::class, 'store'])->name('sales.transact');
+
     Route::get('sales/{sale}/finalize', [SaleController::class, 'finalize'])->name('sales.finalize');
     Route::get('sales/{sale}/product/add', [SaleController::class, 'addproduct'])->name('sales.product.add');
     Route::get('sales/{sale}/product/{soldproduct}/edit', [SaleController::class, 'editproduct'])->name('sales.product.edit');

@@ -47,6 +47,7 @@ class SaleController extends Controller
      */
     public function store(Request $request, Sale $model)
     {
+        // dd($request);
         $existent = Sale::where('client_id', $request->get('client_id'))->where('finalized_at', null)->get();
 
         if($existent->count()) {
@@ -121,6 +122,8 @@ class SaleController extends Controller
         $request->merge(['total_amount' => $request->get('price') * $request->get('qty')]);
 
         $soldProduct->create($request->all());
+
+        // dd($request);
 
         return redirect()
             ->route('sales.show', ['sale' => $sale])
