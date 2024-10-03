@@ -16,9 +16,26 @@ class SaleController extends Controller
 {
     public function index()
     {
-        $sales = Sale::latest()->paginate(25);
+        $sales = Sale::all()->map(function ($sale) {
+            
+            return [
+                "employee" => $sale->user->name,
+                "client" => $sale->client->name,
+                "date" => $sale->created_at,
+                "total_amount" => $sale->total_amount,
+                "sold_products" => $sale->products->map(function ($product) {
 
-        return view('sales.index', compact('sales'));
+                    return [
+                        "name" => $product->product->name,
+                        "qty" => $product->qty,
+                        "price" => $product->price,
+                        "total_amount" => $product->total_amount,
+                    ];
+                })
+            ];
+        });
+
+        return response($sales);
     }
 
     /**
