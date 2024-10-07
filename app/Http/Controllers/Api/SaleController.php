@@ -71,7 +71,23 @@ class SaleController extends Controller
         }
         $this->finalize($sale);
 
-        return response('Sale created successfully', 201);
+        $response = [
+            "employee" => $sale->user->name,
+            "client" => $sale->client->name,
+            "date" =>  Carbon::createFromFormat('Y-m-d H:i:s', $sale->created_at),
+            "total_amount" => $sale->total_amount,
+            "sold_products" => $sale->products->map(function ($product) {
+
+                return [
+                    "name" => $product->product->name,
+                    "qty" => $product->qty,
+                    "price" => $product->price,
+                    "total_amount" => $product->total_amount,
+                ];
+            })
+        ];
+
+        return response($response, 201);
     }
 
     /**
