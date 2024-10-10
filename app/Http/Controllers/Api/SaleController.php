@@ -11,13 +11,14 @@ use App\Models\SoldProduct;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SaleController extends Controller
 {
     public function index()
     {
         $sales = Sale::all()->map(function ($sale) {
-            
+
             return [
                 "employee" => $sale->user->name,
                 "client" => $sale->client->name,
@@ -61,33 +62,44 @@ class SaleController extends Controller
         $existent = Sale::where('client_id', $request->get('client_id'))->where('finalized_at', null)->get();
 
         if ($existent->count()) {
+
             return response('There is already an unfinished sale belonging to this customer.', 400);
         }
 
-        $sale = Sale::create($request->all());
+        try {
 
-        foreach ($request->products as $key => $value) {
-            $this->storeproduct($value, $sale);
+            $sale = Sale::create($request->all());
+
+            $this->finalize($sale);
+
+            foreach ($request->products as $value) {
+                $this->storeproduct($value, $sale);
+            }            
+
+            $this->finalize($sale);
+
+            $this->storetransaction($request, $sale);
+
+            $response = [
+                "employee" => $sale->user->name,
+                "client" => $sale->client->name,
+                "date" =>  Carbon::createFromFormat('Y-m-d H:i:s', $sale->created_at),
+                "total_amount" => $sale->total_amount,
+                "sold_products" => $sale->products->map(function ($product) {
+
+                    return [
+                        "name" => $product->product->name,
+                        "qty" => $product->qty,
+                        "price" => $product->price,
+                        "total_amount" => $product->total_amount,
+                    ];
+                })
+            ];
+
+            return response($response, 201);
+        } catch (\Throwable $th) {
+            return response($th->getMessage());
         }
-        $this->finalize($sale);
-
-        $response = [
-            "employee" => $sale->user->name,
-            "client" => $sale->client->name,
-            "date" =>  Carbon::createFromFormat('Y-m-d H:i:s', $sale->created_at),
-            "total_amount" => $sale->total_amount,
-            "sold_products" => $sale->products->map(function ($product) {
-
-                return [
-                    "name" => $product->product->name,
-                    "qty" => $product->qty,
-                    "price" => $product->price,
-                    "total_amount" => $product->total_amount,
-                ];
-            })
-        ];
-
-        return response($response, 201);
     }
 
     /**
@@ -118,6 +130,7 @@ class SaleController extends Controller
 
     public function finalize(Sale $sale)
     {
+        return response("now we are in the finalize method");
         $sale->total_amount = $sale->products->sum('total_amount');
 
         foreach ($sale->products as $sold_product) {
@@ -189,8 +202,10 @@ class SaleController extends Controller
         return view('sales.addtransaction', compact('sale', 'payment_methods'));
     }
 
-    public function storetransaction(Request $request, Sale $sale, Transaction $transaction)
+    public function storetransaction(Request $request, Sale $sale)
     {
+        return response("Now adding transaction");
+
         switch ($request->all()['type']) {
             case 'income':
                 $request->merge(['title' => 'Payment Received from Sale ID: ' . $request->get('sale_id')]);
@@ -205,7 +220,21 @@ class SaleController extends Controller
                 break;
         }
 
-        $transaction->create($request->all());
+
+
+        Transaction::create([
+            'client_id' => $request->client_id,
+            'user_id' => Auth::user()->id,
+            'type' => $request->all()['type'],
+            'payment_method_id' => "1",
+            'amount' => $sale->total_amount,
+            'reference' => 'ref',
+            'title' => 'Payment Received from Customer ID: ' . $request->client_id
+        ]);
+
+        $client = Client::find($request->get('client_id'));
+        $client->balance += $request->get('total_amount');
+        $client->save();
 
         return redirect()
             ->route('sales.show', compact('sale'))
