@@ -39,7 +39,7 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/forgot-password', [AuthController::class, 'passwordReset']);
 
-// Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => 'auth:api'], function () {
 
     Route::resources([
         'users' => UserController::class,
@@ -86,4 +86,4 @@ Route::post('/forgot-password', [AuthController::class, 'passwordReset']);
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::match(['put', 'patch'], 'profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::match(['put', 'patch'], 'profile/password', [ProfileController::class, 'password'])->name('profile.password');
-// });
+});

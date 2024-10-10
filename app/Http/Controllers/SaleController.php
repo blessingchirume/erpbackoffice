@@ -162,6 +162,7 @@ class SaleController extends Controller
 
     public function storetransaction(Request $request, Sale $sale, Transaction $transaction)
     {
+        
         switch($request->all()['type']) {
             case 'income':
                 $request->merge(['title' => 'Payment Received from Sale ID: ' . $request->get('sale_id')]);
@@ -175,6 +176,8 @@ class SaleController extends Controller
                 }
                 break;
         }
+
+        dd($request->all());
 
         $transaction->create($request->all());
 

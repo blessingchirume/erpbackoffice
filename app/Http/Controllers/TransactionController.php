@@ -115,6 +115,7 @@ class TransactionController extends Controller
      */
     public function store(Request $request, Transaction $transaction)
     {
+        
         if ($request->get('client_id')) {
             switch ($request->get('type')) {
                 case 'income':
@@ -129,6 +130,8 @@ class TransactionController extends Controller
                     }
                     break;
             }
+
+            // dd($request->all());
 
             $transaction->create($request->all());
             $client = Client::find($request->get('client_id'));
