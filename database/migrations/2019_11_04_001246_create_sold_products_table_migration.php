@@ -20,6 +20,7 @@ class CreateSoldProductsTableMigration extends Migration
             $table->integer('qty');
             $table->decimal('price', 10, 2);
             $table->decimal('total_amount', 10, 2);
+            $table->decimal('discount', 10, 2)->default(0.0);
             $table->timestamps();
             $table->foreign('sale_id')->references('id')->on('sales')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products');
