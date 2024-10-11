@@ -70,15 +70,63 @@ class SaleController extends Controller
 
             $sale = Sale::create($request->all());
 
-            $this->finalize($sale);
 
             foreach ($request->products as $value) {
                 $this->storeproduct($value, $sale);
-            }            
+            }
 
-            $this->finalize($sale);
+            // Handle sale finalization
 
-            $this->storetransaction($request, $sale);
+            $sale->total_amount = $sale->products->sum('total_amount');
+
+            foreach ($sale->products as $sold_product) {
+                $product_name = $sold_product->product->name;
+                $product_stock = $sold_product->product->stock;
+                if ($sold_product->qty > $product_stock) return response("The product '$product_name' does not have enough stock. Only has $product_stock units.", 500);
+            }
+
+            foreach ($sale->products as $sold_product) {
+                $sold_product->product->stock -= $sold_product->qty;
+                $sold_product->product->save();
+            }
+
+            $sale->finalized_at = Carbon::now()->toDateTimeString();
+            $sale->client->balance -= $sale->total_amount;
+            $sale->save();
+            $sale->client->save();
+
+            // Handle sale as transaction logic
+
+            switch ($request->all()['type']) {
+                case 'income':
+                    $request->merge(['title' => 'Payment Received from Sale ID: ' . $request->get('sale_id')]);
+                    break;
+
+                case 'expense':
+                    $request->merge(['title' => 'Sale Return Payment ID: ' . $request->all('sale_id')]);
+
+                    if ($request->get('amount') > 0) {
+                        $request->merge(['amount' => (float) $request->get('amount') * (-1)]);
+                    }
+                    break;
+            }
+
+
+
+            Transaction::create([
+                'client_id' => $request->client_id,
+                'user_id' => Auth::user()->id,
+                'type' => $request->all()['type'],
+                'payment_method_id' => "1",
+                'amount' => $sale->total_amount,
+                'reference' => 'ref',
+                'title' => 'Payment Received from Customer ID: ' . $request->client_id
+            ]);
+
+            $client = Client::find($request->get('client_id'));
+            $client->balance += $request->get('total_amount');
+            $client->save();
+
 
             $response = [
                 "employee" => $sale->user->name,
@@ -98,7 +146,7 @@ class SaleController extends Controller
 
             return response($response, 201);
         } catch (\Throwable $th) {
-            return response($th->getMessage());
+            return response($th->getMessage(), 500);
         }
     }
 
