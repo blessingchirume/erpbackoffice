@@ -12,6 +12,7 @@ use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PhpParser\Node\Expr\Cast\Double;
 
 class SaleController extends Controller
 {
@@ -22,6 +23,8 @@ class SaleController extends Controller
             return [
                 "employee" => $sale->user->name,
                 "client" => $sale->client->name,
+                "discount" => $sale->discount,
+                "tendered_amount" => 20,
                 "date" =>  Carbon::createFromFormat('Y-m-d H:i:s', $sale->created_at),
                 "total_amount" => $sale->total_amount,
                 "sold_products" => $sale->products->map(function ($product) {
@@ -129,17 +132,21 @@ class SaleController extends Controller
 
 
             $response = [
+                "id" => (int)(date('Ymd'). $sale->id),
                 "employee" => $sale->user->name,
                 "client" => $sale->client->name,
+                "discount" => (Double)$sale->discount,
+                "tendered_amount" => (Double)$sale->tendered_amount,
+                "change" => (Double)$sale->change,
                 "date" =>  Carbon::createFromFormat('Y-m-d H:i:s', $sale->created_at),
-                "total_amount" => $sale->total_amount,
+                "total_amount" => (Double)$sale->total_amount,
                 "sold_products" => $sale->products->map(function ($product) {
 
                     return [
                         "name" => $product->product->name,
                         "qty" => $product->qty,
-                        "price" => $product->price,
-                        "total_amount" => $product->total_amount,
+                        "price" => (Double)$product->price,
+                        "total_amount" => (Double)$product->total_amount,
                     ];
                 })
             ];
