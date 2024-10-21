@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SaleController;
+use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +36,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::post('/login', [AuthController::class, 'authenticate']);
+
+Route::get('/tenant/{code}', [TenantController::class, 'Get']);
 
 Route::post('/register', [AuthController::class, 'register']);
 
@@ -82,6 +86,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('sales/{sale}/product/{soldproduct}', [SaleController::class, 'destroyproduct'])->name('sales.product.destroy');
 
     Route::get('clients/{client}/transactions/add', [ClientController::class, 'addtransaction'])->name('clients.transactions.add');
+
+    Route::prefix('reports')->group(function () {
+        Route::get('sales/{start}/{end}', [ReportController::class, 'SalesReport'])->name('reports.sales');
+    });
 
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::match(['put', 'patch'], 'profile', [ProfileController::class, 'update'])->name('profile.update');
