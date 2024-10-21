@@ -20,7 +20,8 @@ return [
     'central_domains' => [
         '127.0.0.1',
         'localhost',
-        '192.168.1.102'
+        '192.168.1.102',
+        'retailmate.co.zw'
     ],
 
     /**
