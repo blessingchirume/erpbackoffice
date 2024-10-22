@@ -11,17 +11,12 @@ use Illuminate\Http\Request;
 
 class ReceiptController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param  Receipt  $model
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        $receipts = Receipt::all();
+        $receipts = Receipt::paginate(25);
 
-        return response($receipts);
+        return view('inventory.receipts.index', compact('receipts'));
     }
 
     /**

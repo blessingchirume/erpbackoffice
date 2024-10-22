@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ReceiptController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\TenantController;
@@ -14,7 +15,6 @@ use App\Http\Controllers\MethodController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProviderController;
-use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\UserController;
