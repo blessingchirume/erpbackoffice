@@ -19,9 +19,9 @@ class ReceiptController extends Controller
      */
     public function index()
     {
-        $receipts = Receipt::paginate(25);
+        $receipts = Receipt::all();
 
-        return view('inventory.receipts.index', compact('receipts'));
+        return response($receipts);
     }
 
     /**
