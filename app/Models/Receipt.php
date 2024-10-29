@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Receipt extends Model
 {
+    protected $connection = 'mysql';
     protected $fillable = [
         'title', 'provider_id', 'user_id'
     ];

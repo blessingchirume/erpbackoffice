@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Provider extends Model
 {
     use SoftDeletes;
-
+    protected $connection = 'mysql';
     protected $fillable = [
         'name', 'description', 'email', 'phone', 'paymentinfo'
     ];

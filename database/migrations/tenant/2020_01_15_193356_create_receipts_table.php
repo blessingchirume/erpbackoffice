@@ -20,7 +20,7 @@ class CreateReceiptsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->timestamp('finalized_at')->nullable();
             $table->foreign('provider_id')->references('id')->on('providers');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on(config()->get('database.connections.application.database', 'inventory').'.users');
             $table->timestamps();
         });
     }

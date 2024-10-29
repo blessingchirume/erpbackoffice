@@ -30,7 +30,7 @@ class CreateTransactionsTableMigration extends Migration
             $table->foreign('client_id')->references('id')->on('clients');
             $table->foreign('sale_id')->references('id')->on('sales')->onDelete('cascade');
             $table->foreign('provider_id')->references('id')->on('providers');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on(config()->get('database.connections.application.database', 'inventory').'.users');
             $table->foreign('transfer_id')->references('id')->on('transfers')->onDelete('cascade');
         });
     }

@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transfer extends Model
 {
+    protected $connection = 'mysql';
     protected $fillable = [
         'title', 'sended_amount', 'received_amount', 'sender_method_id', 'receiver_method_id', 'reference'
     ];

@@ -7,7 +7,7 @@ use App\Models\Sale;
 use App\Models\SoldProduct;
 use App\Models\Transaction;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -19,6 +19,8 @@ class HomeController extends Controller
 
     public function index()
     {
+
+        // dd(Auth::user()->sales);
         $monthlyBalanceByMethod = $this->getMethodBalance()->get('monthlyBalanceByMethod');
         $monthlyBalance = $this->getMethodBalance()->get('monthlyBalance');
 
