@@ -1,4 +1,4 @@
-@extends('layouts.app', ['class' => 'register-page', 'page' => 'Inhouse Inventory', 'contentClass' => 'register-page', 'section' => 'auth'])
+@extends('layouts.tenants.app', ['class' => 'register-page', 'page' => 'Inhouse Inventory', 'contentClass' => 'register-page', 'section' => 'auth'])
 
 @section('content')
     <div class="row">
@@ -41,14 +41,14 @@
                             @include('alerts.feedback', ['field' => 'business_type'])
                         </div>
 
-                        <div class="input-group{{ $errors->has('name') ? ' has-danger' : '' }}">
+                        <div class="input-group{{ $errors->has('company_db_name') ? ' has-danger' : '' }}">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <i class="tim-icons icon-single-02"></i>
                                 </div>
                             </div>
-                            <input type="text" name="app_name" class="form-control {{ $errors->has('app_name') ? ' is-invalid' : '' }}" placeholder="App name with no spaces" value="{{ old('app_name') }}">
-                            @include('alerts.feedback', ['field' => 'app_name'])
+                            <input type="text" name="company_db_name" class="form-control {{ $errors->has('company_db_name') ? ' is-invalid' : '' }}" placeholder="App db name with no spaces" value="{{ old('company_db_name') }}">
+                            @include('alerts.feedback', ['field' => 'company_db_name'])
                         </div>
 
                         {{--<div class="input-group{{ $errors->has('password') ? ' has-danger' : '' }}">

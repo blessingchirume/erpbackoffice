@@ -16,9 +16,13 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->unsignedBigInteger('company_id')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+
+            $table->foreign('company_id')->references('id')->on('companies');
+
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

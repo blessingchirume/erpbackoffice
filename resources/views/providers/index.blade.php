@@ -21,6 +21,7 @@
                         <table class="table tablesorter " id="">
                             <thead class=" text-primary">
                                 <th scope="col">Name</th>
+                                <th scope="col">Address</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Telephone</th>
@@ -32,6 +33,7 @@
                                 @foreach ($providers as $provider)
                                     <tr>
                                         <td>{{ $provider->name }}</td>
+                                        <td>{{ $provider->address }}</td>
                                         <td>{{ $provider->description }}</td>
 
                                         <td>

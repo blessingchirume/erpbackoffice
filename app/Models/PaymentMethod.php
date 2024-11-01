@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PaymentMethod extends Model
 {
     use SoftDeletes;
+    protected $connection = 'mysql';
     protected $fillable = ['name', 'description'];
     public function transactions() {
         return $this->hasMany(Transaction::class, 'payment_method_id', 'id');

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductCategory extends Model
 {
+    protected $connection = 'mysql';
     use SoftDeletes;
     protected $table = 'product_categories';
     protected $fillable = ['name'];

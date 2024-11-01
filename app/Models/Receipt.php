@@ -5,8 +5,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Receipt extends Model
 {
+    protected $connection = 'mysql';
+
     protected $fillable = [
-        'title', 'provider_id', 'user_id'
+        'title', 'provider_id', 'user_id', 'currency_id', 'rate'
     ];
 
     public function provider()

@@ -7,8 +7,10 @@ use Carbon\Carbon;
 
 class Transaction extends Model
 {
+    protected $connection = 'mysql';
+
     protected $fillable = [
-        'title', 'reference', 'amount', 'payment_method_id', 'type', 'client_id', 'user_id', 'sale_id', 'provider_id', 'transfer_id'
+        'title', 'reference', 'amount', 'payment_method_id', 'type', 'client_id', 'user_id', 'sale_id', 'provider_id', 'transfer_id', 'currency_id', 'rate'
     ];
 
     public function method()

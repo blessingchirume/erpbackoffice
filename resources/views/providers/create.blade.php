@@ -26,6 +26,12 @@
                                     @include('alerts.feedback', ['field' => 'name'])
                                 </div>
 
+                                <div class="form-group{{ $errors->has('address') ? ' has-danger' : '' }}">
+                                    <label class="form-control-label" for="address">Address</label>
+                                    <input type="text" name="address" id="address" class="form-control form-control-alternative{{ $errors->has('address') ? ' is-invalid' : '' }}" placeholder="Address" value="{{ old('address') }}" required autofocus>
+                                    @include('alerts.feedback', ['field' => 'address'])
+                                </div>
+
                                 <div class="form-group{{ $errors->has('description') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-description">Description</label>
                                     <input type="text" name="description" id="input-description" class="form-control form-control-alternative{{ $errors->has('description') ? ' is-invalid' : '' }}" placeholder="Description" value="{{ old('description') }}" required>

@@ -17,7 +17,9 @@ class CreateSoldProductsTableMigration extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('sale_id');
             $table->unsignedBigInteger('product_id');
+
             $table->integer('qty');
+            $table->decimal('item_cost', 10, 2);
             $table->decimal('price', 10, 2);
             $table->decimal('total_amount', 10, 2);
             $table->decimal('discount', 10, 2)->default(0.0);

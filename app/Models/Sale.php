@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Sale extends Model
 {
+
+    protected $connection = 'mysql';
+
     protected $fillable = [
         'client_id',
         'user_id',
@@ -35,6 +39,6 @@ class Sale extends Model
     }
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 }

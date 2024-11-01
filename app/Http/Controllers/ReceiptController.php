@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Currency;
 use App\Models\Product;
 use App\Models\Provider;
 use App\Models\Receipt;
@@ -28,7 +29,9 @@ class ReceiptController extends Controller
     {
         $providers = Provider::all();
 
-        return view('inventory.receipts.create', compact('providers'));
+        $currencies = Currency::all();
+
+        return view('inventory.receipts.create', compact('providers', 'currencies'));
     }
 
     /**
@@ -40,6 +43,7 @@ class ReceiptController extends Controller
      */
     public function store(Request $request, Receipt $receipt)
     {
+        $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate]);
         $receipt = $receipt->create($request->all());
 
         return redirect()
@@ -53,8 +57,9 @@ class ReceiptController extends Controller
      * @param  Receipt  $receipt
      * @return \Illuminate\Http\Response
      */
-    public function show(Receipt $receipt)
+    public function show($id)
     {
+        $receipt = Receipt::find($id);
         return view('inventory.receipts.show', compact('receipt'));
     }
 
@@ -64,9 +69,9 @@ class ReceiptController extends Controller
      * @param  Receipt  $receipt
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Receipt $receipt)
+    public function destroy($receipt)
     {
-        $receipt->delete();
+        Receipt::find($receipt)->delete();
 
         return redirect()
             ->route('receipts.index')
@@ -79,8 +84,9 @@ class ReceiptController extends Controller
      * @param  Receipt  $receipt
      * @return \Illuminate\Http\Response
      */
-    public function finalize(Receipt $receipt)
+    public function finalize($id)
     {
+        $receipt = Receipt::find($id);
         $receipt->finalized_at = Carbon::now()->toDateTimeString();
         $receipt->save();
 
@@ -99,8 +105,9 @@ class ReceiptController extends Controller
      * @param  Receipt  $receipt
      * @return \Illuminate\Http\Response
      */
-    public function addproduct(Receipt $receipt)
+    public function addproduct($id)
     {
+        $receipt = Receipt::find($id);
         $products = Product::all();
 
         return view('inventory.receipts.addproduct', compact('receipt', 'products'));
@@ -113,9 +120,9 @@ class ReceiptController extends Controller
      * @param  Receipt  $receipt
      * @return \Illuminate\Http\Response
      */
-    public function storeproduct(Request $request, Receipt $receipt, ReceivedProduct $receivedproduct)
+    public function storeproduct(Request $request, $receipt)
     {
-        $receivedproduct->create($request->all());
+        ReceivedProduct::create($request->all());
 
         return redirect()
             ->route('receipts.show', $receipt)

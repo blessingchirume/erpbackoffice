@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\ApplicationRoleConstants;
 use App\Models\PaymentMethod;
 use App\Models\Sale;
 use App\Models\SoldProduct;
 use App\Models\Transaction;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Permission;
 
 class HomeController extends Controller
 {
@@ -19,13 +21,18 @@ class HomeController extends Controller
 
     public function index()
     {
+        // if no company has been defined for user then redirect to Admin
+        if(Auth::user()->roles->pluck('name')[0] == ApplicationRoleConstants::SuperAdmin){
+            return redirect()->route('companies.index');
+        }
+
         $monthlyBalanceByMethod = $this->getMethodBalance()->get('monthlyBalanceByMethod');
         $monthlyBalance = $this->getMethodBalance()->get('monthlyBalance');
 
         $anualsales = $this->getAnnualSales();
         $anualclients = $this->getAnnualClients();
         $anualproducts = $this->getAnnualProducts();
-        
+
         return view('dashboard', [
             'monthlybalance'            => $monthlyBalance,
             'monthlybalancebymethod'    => $monthlyBalanceByMethod,
@@ -84,11 +91,11 @@ class HomeController extends Controller
     public function getAnnualProducts()
     {
         $products = [];
-        foreach(range(1, 12) as $i) { 
+        foreach(range(1, 12) as $i) {
             $monthproducts = SoldProduct::whereYear('created_at', Carbon::now()->year)->whereMonth('created_at', $i)->sum('qty');
 
             array_push($products, $monthproducts);
-        }        
+        }
         return "[" . implode(',', $products) . "]";
     }
 

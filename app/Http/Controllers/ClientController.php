@@ -18,11 +18,11 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = DB::table('clients')->get();
+        $clients = Client::paginate(20);
 
-        return response($clients);
+        // return response($clients);
 
-        // return view('clients.index', compact('clients'));
+        return view('clients.index', compact('clients'));
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Currency;
 use App\Models\PaymentMethod;
 use App\Models\Provider;
 use App\Models\Sale;
@@ -36,7 +37,7 @@ class TransactionController extends Controller
     {
         Carbon::setWeekStartsAt(Carbon::SUNDAY);
         Carbon::setWeekEndsAt(Carbon::SATURDAY);
-        
+
         $salesperiods = [];
         $transactionsperiods = [];
 
@@ -92,17 +93,20 @@ class TransactionController extends Controller
             case 'expense':
                 return view('transactions.expense.create', [
                     'payment_methods' => PaymentMethod::all(),
+                    'currencies' => Currency::all(),
                 ]);
 
             case 'payment':
                 return view('transactions.payment.create', [
                     'payment_methods' => PaymentMethod::all(),
                     'providers' => Provider::all(),
+                    'currencies' => Currency::all(),
                 ]);
 
             case 'income':
                 return view('transactions.income.create', [
                     'payment_methods' => PaymentMethod::all(),
+                    'currencies' => Currency::all(),
                 ]);
         }
     }
@@ -115,7 +119,7 @@ class TransactionController extends Controller
      */
     public function store(Request $request, Transaction $transaction)
     {
-        
+
         if ($request->get('client_id')) {
             switch ($request->get('type')) {
                 case 'income':
@@ -132,6 +136,7 @@ class TransactionController extends Controller
             }
 
             // dd($request->all());
+            $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate]);
 
             $transaction->create($request->all());
             $client = Client::find($request->get('client_id'));
@@ -146,7 +151,7 @@ class TransactionController extends Controller
         switch ($request->get('type')) {
             case 'expense':
                 if ($request->get('amount') > 0) {
-                    $request->merge(['amount' => ((float) $request->get('amount') * (-1))]);
+                    $request->merge(['amount' => ((float) $request->get('amount') * (-1)), 'rate' => Currency::find($request->get('currency_id'))->rate]);
                 }
 
                 $transaction->create($request->all());
@@ -157,7 +162,7 @@ class TransactionController extends Controller
 
             case 'payment':
                 if ($request->get('amount') > 0) {
-                    $request->merge(['amount' => ((float) $request->get('amount') * (-1))]);
+                    $request->merge(['amount' => ((float) $request->get('amount') * (-1)), 'rate' => Currency::find($request->get('currency_id'))->rate]);
                 }
 
                 $transaction->create($request->all());
@@ -167,6 +172,7 @@ class TransactionController extends Controller
                     ->withStatus('Payment registered successfully.');
 
             case 'income':
+                $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate]);
                 $transaction->create($request->all());
 
                 return redirect()
@@ -180,7 +186,7 @@ class TransactionController extends Controller
         }
     }
 
-    /** 
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -192,20 +198,23 @@ class TransactionController extends Controller
             case 'expense':
                 return view('transactions.expense.edit', [
                     'transaction' => $transaction,
-                    'payment_methods' => PaymentMethod::all()
+                    'payment_methods' => PaymentMethod::all(),
+                    'currencies' => Currency::all(),
                 ]);
 
             case 'payment':
                 return view('transactions.payment.edit', [
                     'transaction' => $transaction,
                     'payment_methods' => PaymentMethod::all(),
-                    'providers' => Provider::all()
+                    'providers' => Provider::all(),
+                    'currencies' => Currency::all(),
                 ]);
 
             case 'income':
                 return view('transactions.income.edit', [
                     'transaction' => $transaction,
                     'payment_methods' => PaymentMethod::all(),
+                    'currencies' => Currency::all(),
                 ]);
         }
     }

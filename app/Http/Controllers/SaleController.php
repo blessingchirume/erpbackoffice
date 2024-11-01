@@ -21,6 +21,7 @@ class SaleController extends Controller
      */
     public function index()
     {
+        // dd(1);
         $sales = Sale::latest()->paginate(25);
 
         return view('sales.index', compact('sales'));
@@ -55,7 +56,7 @@ class SaleController extends Controller
         }
 
         $sale = $model->create($request->all());
-        
+
         return redirect()
             ->route('sales.show', ['sale' => $sale->id])
             ->withStatus('Sale registered successfully, you can start registering products and transactions.');
@@ -67,8 +68,10 @@ class SaleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Sale $sale)
+    public function show($id)
     {
+        // dd(1);
+        $sale = Sale::find($id);
         return view('sales.show', ['sale' => $sale]);
     }
 
@@ -78,8 +81,9 @@ class SaleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sale $sale)
+    public function destroy($id)
     {
+        $sale = Sale::find($id);
         $sale->delete();
 
         return redirect()
@@ -87,8 +91,9 @@ class SaleController extends Controller
             ->withStatus('The sale record has been successfully deleted.');
     }
 
-    public function finalize(Sale $sale)
+    public function finalize($id)
     {
+        $sale = Sale::find($id);
         $sale->total_amount = $sale->products->sum('total_amount');
 
         foreach ($sale->products as $sold_product) {
@@ -110,15 +115,19 @@ class SaleController extends Controller
         return back()->withStatus('The sale has been successfully completed.');
     }
 
-    public function addproduct(Sale $sale)
+    public function addproduct($id)
     {
+        $sale = Sale::find($id);
         $products = Product::all();
 
         return view('sales.addproduct', compact('sale', 'products'));
     }
 
-    public function storeproduct(Request $request, Sale $sale, SoldProduct $soldProduct)
+    public function storeproduct(Request $request, $id, SoldProduct $soldProduct)
     {
+        $sale = Sale::find($id);
+        $request->merge(['item_cost' => 70]);
+
         $request->merge(['total_amount' => $request->get('price') * $request->get('qty')]);
 
         $soldProduct->create($request->all());
@@ -130,8 +139,10 @@ class SaleController extends Controller
             ->withStatus('Product successfully registered.');
     }
 
-    public function editproduct(Sale $sale, SoldProduct $soldproduct)
+    public function editproduct($id, SoldProduct $soldproduct)
     {
+        $sale = Sale::find($id);
+
         $products = Product::all();
 
         return view('sales.editproduct', compact('sale', 'soldproduct', 'products'));
@@ -146,23 +157,25 @@ class SaleController extends Controller
         return redirect()->route('sales.show', $sale)->withStatus('Product successfully modified.');
     }
 
-    public function destroyproduct(Sale $sale, SoldProduct $soldproduct)
+    public function destroyproduct(SoldProduct $soldproduct)
     {
         $soldproduct->delete();
 
         return back()->withStatus('The product has been disposed of successfully.');
     }
 
-    public function addtransaction(Sale $sale)
+    public function addtransaction($id)
     {
+        $sale = Sale::find($id);
+
         $payment_methods = PaymentMethod::all();
 
         return view('sales.addtransaction', compact('sale', 'payment_methods'));
     }
 
-    public function storetransaction(Request $request, Sale $sale, Transaction $transaction)
+    public function storetransaction(Request $request, $id, Transaction $transaction)
     {
-        
+        $sale = Sale::find($id);
         switch($request->all()['type']) {
             case 'income':
                 $request->merge(['title' => 'Payment Received from Sale ID: ' . $request->get('sale_id')]);
@@ -177,7 +190,6 @@ class SaleController extends Controller
                 break;
         }
 
-        dd($request->all());
 
         $transaction->create($request->all());
 
@@ -186,15 +198,19 @@ class SaleController extends Controller
             ->withStatus('Successfully registered transaction.');
     }
 
-    public function edittransaction(Sale $sale, Transaction $transaction)
+    public function edittransaction($id, Transaction $transaction)
     {
+        $sale = Sale::find($id);
+
         $payment_methods = PaymentMethod::all();
 
         return view('sales.edittransaction', compact('sale', 'transaction', 'payment_methods'));
     }
 
-    public function updatetransaction(Request $request, Sale $sale, Transaction $transaction)
+    public function updatetransaction(Request $request, $id, Transaction $transaction)
     {
+        $sale = Sale::find($id);
+
         switch($request->get('type')) {
             case 'income':
                 $request->merge(['title' => 'Payment Received from Sale ID: '. $request->get('sale_id')]);
