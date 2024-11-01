@@ -2,10 +2,14 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Receipt extends Model
+class Receipt extends Model implements Auditable
 {
     protected $connection = 'mysql';
+
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'title', 'provider_id', 'user_id', 'currency_id', 'rate'

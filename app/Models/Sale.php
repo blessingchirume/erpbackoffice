@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Sale extends Model
+class Sale extends Model implements Auditable
 {
+
+    use \OwenIt\Auditing\Auditable;
 
     protected $connection = 'mysql';
 

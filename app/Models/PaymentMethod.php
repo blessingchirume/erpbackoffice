@@ -3,10 +3,11 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class PaymentMethod extends Model
+class PaymentMethod extends Model implements Auditable
 {
-    use SoftDeletes;
+    use SoftDeletes, \OwenIt\Auditing\Auditable;
     protected $connection = 'mysql';
     protected $fillable = ['name', 'description'];
     public function transactions() {

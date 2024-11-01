@@ -85,6 +85,9 @@ Route::group(['middleware' => ['auth', 'database']], function () {
     Route::post('sales/{sale}/product', [SaleController::class, 'storeproduct'])->name('sales.product.store');
     Route::match(['put', 'patch'], 'sales/{sale}/product/{soldproduct}', [SaleController::class, 'updateproduct'])->name('sales.product.update');
     Route::delete('sales/{sale}/product/{soldproduct}', [SaleController::class, 'destroyproduct'])->name('sales.product.destroy');
+    Route::get('sales/filter/{filter_type}', [SaleController::class, 'filter'])->name('sales.filter');
+    Route::post('sales/employee', [SaleController::class, 'employeeSales'])->name('sales.employee');
+    Route::post('sales/date', [SaleController::class, 'dailySales'])->name('sales.daily');
 
     Route::get('clients/{client}/transactions/add', [ClientController::class, 'addtransaction'])->name('clients.transactions.add');
 

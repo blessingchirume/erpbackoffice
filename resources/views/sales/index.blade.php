@@ -11,7 +11,10 @@
                             <h4 class="card-title">Sales</h4>
                         </div>
                         <div class="col-4 text-right">
-                            <a href="{{ route('sales.create') }}" class="btn btn-sm btn-primary">Register Sale</a>
+                            <a href="{{ route('sales.filter', 'employee') }}" class="btn btn-sm btn-primary">Employee Sales</a>
+                            <a href="{{ route('sales.filter', 'shop') }}" class="btn btn-sm btn-secondary">Shop Sale</a>
+                            <a href="{{ route('sales.filter', 'date') }}" class="btn btn-sm btn-primary">Get By Date</a>
+                            <a href="{{ route('sales.create') }}" class="btn btn-sm btn-secondary">Register Sale</a>
                         </div>
                     </div>
                 </div>
