@@ -56,7 +56,7 @@ class SaleController extends Controller
         }
 
         $sale = $model->create($request->all());
-        
+
         return redirect()
             ->route('sales.show', ['sale' => $sale->id])
             ->withStatus('Sale registered successfully, you can start registering products and transactions.');
@@ -126,6 +126,8 @@ class SaleController extends Controller
     public function storeproduct(Request $request, $id, SoldProduct $soldProduct)
     {
         $sale = Sale::find($id);
+        $request->merge(['item_cost' => 70]);
+
         $request->merge(['total_amount' => $request->get('price') * $request->get('qty')]);
 
         $soldProduct->create($request->all());
@@ -208,7 +210,7 @@ class SaleController extends Controller
     public function updatetransaction(Request $request, $id, Transaction $transaction)
     {
         $sale = Sale::find($id);
-        
+
         switch($request->get('type')) {
             case 'income':
                 $request->merge(['title' => 'Payment Received from Sale ID: '. $request->get('sale_id')]);

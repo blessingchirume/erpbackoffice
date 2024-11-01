@@ -22,7 +22,8 @@
                             <thead class=" text-primary">
                                 <th scope="col">Category</th>
                                 <th scope="col">Product</th>
-                                <th scope="col">Base Price</th>
+                                <th scope="col">Item Cost</th>
+                                <th scope="col">Unit Price</th>
                                 <th scope="col">Stock</th>
                                 <th scope="col">Faulty</th>
                                 <th scope="col">Total Sold</th>
@@ -33,6 +34,7 @@
                                     <tr>
                                         <td><a href="{{ route('categories.show', $product->category) }}">{{ $product->category->name }}</a></td>
                                         <td>{{ $product->name }}</td>
+                                        <td>{{ format_money($product->item_cost) }}</td>
                                         <td>{{ format_money($product->price) }}</td>
                                         <td>{{ $product->stock }}</td>
                                         <td>{{ $product->stock_defective }}</td>

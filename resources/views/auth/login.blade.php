@@ -32,16 +32,11 @@
                 </div>
                 <div class="card-footer">
                     <button type="submit" href="" class="btn btn-primary btn-lg btn-block mb-3">Log in</button>
-                    <div class="pull-left">
-                        <h6>
-                            <a href="{{ route('register') }}" class="link footer-link">Create Account</a>
-                        </h6>
-                    </div>
-                    {{-- <div class="pull-right">
+                    <div class="pull-right">
                         <h6>
                             <a href="{{ route('password.request') }}" class="link footer-link">I forgot the passwod</a>
                         </h6>
-                    </div> --}}
+                    </div>
                 </div>
             </div>
         </form>

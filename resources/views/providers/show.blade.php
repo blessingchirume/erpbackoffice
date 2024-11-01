@@ -12,6 +12,7 @@
                         <thead>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Address</th>
                             <th>Description</th>
                             <th>Email</th>
                             <th>Telephone</th>
@@ -23,6 +24,7 @@
                             <tr>
                                 <td>{{ $provider->id }}</td>
                                 <td>{{ $provider->name }}</td>
+                                <td>{{ $provider->address }}</td>
                                 <td>{{ $provider->description }}</td>
                                 <td>{{ $provider->email }}</td>
                                 <td>{{ $provider->phone }}</td>

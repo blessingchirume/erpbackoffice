@@ -9,7 +9,7 @@ class Provider extends Model
     use SoftDeletes;
     protected $connection = 'mysql';
     protected $fillable = [
-        'name', 'description', 'email', 'phone', 'paymentinfo'
+        'name', 'description', 'email', 'phone', 'paymentinfo', 'address'
     ];
 
     public function transactions()

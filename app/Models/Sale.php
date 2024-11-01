@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Sale extends Model
 {
 
     protected $connection = 'mysql';
-    
+
     protected $fillable = [
         'client_id',
         'user_id',

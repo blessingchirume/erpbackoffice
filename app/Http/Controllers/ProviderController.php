@@ -7,12 +7,7 @@ use App\Models\Provider;
 
 class ProviderController extends Controller
 {
-    /**
-     * Display a listing of the Provs
-     *
-     * @param  \App\Provider  $model
-     * @return \Illuminate\View\View
-     */
+
     public function index(Provider $model)
     {
         $providers = Provider::paginate(25);
@@ -64,8 +59,10 @@ class ProviderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Provider $provider)
+    public function show( $id)
     {
+        $provider = Provider::find($id);
+
         $transactions = $provider->transactions()->latest()->limit(25)->get();
 
         $receipts = $provider->receipts()->latest()->limit(25)->get();

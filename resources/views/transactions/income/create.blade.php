@@ -28,6 +28,19 @@
                                     @include('alerts.feedback', ['field' => 'title'])
                                 </div>
 
+                                <div class="form-group{{ $errors->has('currency_id') ? ' has-danger' : '' }}">
+                                    <label class="form-control-label" for="input-currency">Currency</label>
+                                    <select name="currency_id" id="input-currency" class="form-select form-control-alternative{{ $errors->has('currency_id') ? ' is-invalid' : '' }}" required>
+                                        @foreach ($currencies as $currency)
+                                            @if($currency['id'] == old('currency_id'))
+                                                <option value="{{$currency['id']}}" selected>{{$currency['name']}}</option>
+                                            @else
+                                                <option value="{{$currency['id']}}">{{$currency['name']}}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    @include('alerts.feedback', ['field' => 'currency_id'])
+                                </div>
 
                                 <div class="form-group{{ $errors->has('payment_method_id') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-method">Payment Method</label>
