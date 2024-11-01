@@ -25,7 +25,7 @@ class CompanyController extends Controller
 
         $tenant = Company::create([
             'name' => $request->get('company_name'),
-            'email' => $request->get('company_name'),
+            'email' => $request->get('company_email'),
             'business_type' => $request->get('business_type'),
             'company_db_name' => str_replace(' ', '_', $request->get('company_name')),
         ]);

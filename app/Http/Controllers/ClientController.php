@@ -54,8 +54,9 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Client $client)
+    public function show($id)
     {
+        $client = Client::find($id);
         return view('clients.show', compact('client'));
     }
 
@@ -101,8 +102,9 @@ class ClientController extends Controller
             ->withStatus('Customer successfully removed.');
     }
 
-    public function addtransaction(Client $client)
+    public function addtransaction($id)
     {
+        $client = Client::find($id);
         $payment_methods = PaymentMethod::all();
 
         return view('clients.transactions.add', compact('client', 'payment_methods'));

@@ -3,11 +3,12 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class ProductCategory extends Model
+class ProductCategory extends Model implements Auditable
 {
     protected $connection = 'mysql';
-    use SoftDeletes;
+    use SoftDeletes, \OwenIt\Auditing\Auditable;
     protected $table = 'product_categories';
     protected $fillable = ['name'];
     public function products() {

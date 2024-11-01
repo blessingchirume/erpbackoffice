@@ -9,15 +9,16 @@ use App\Models\Sale;
 use App\Models\SoldProduct;
 use App\Models\Transaction;
 use Carbon\Carbon;
-
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class SaleController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -28,31 +29,53 @@ class SaleController extends Controller
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function filter($filter_type)
     {
-        $clients = Client::all();
+        switch ($filter_type) {
+            case 'employee';
+                $users = Auth::user()->company->users;
+                return view('sales.filters.employee_filter', compact('users'));
+            case 'date':
+                return view('sales.filters.date_filter');
+            case 'shop':
+                $shops = [];
+                return view('sales.filters.shop_filter', compact('shops'));
+        }
 
-        return view('sales.create', compact('clients'));
+
+    }
+
+    public function employeeSales(Request $request)
+    {
+        $sales = Sale::where('user_id', $request->get('user_id'))->paginate(25);
+        return view('sales.index', compact('sales'));
+    }
+
+    public function shopSales(Request $request)
+    {
+        $sales = Sale::where('user_id', $request->get('user_id'))->paginate(25);
+        return view('sales.index', compact('sales'));
+    }
+
+    public function dailySales(Request $request)
+    {
+        $sales = Sale::whereDate('created_at', '>=', Carbon::parse($request->get('date')))->paginate();
+        return view('sales.index', compact('sales'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(Request $request, Sale $model)
     {
         // dd($request);
         $existent = Sale::where('client_id', $request->get('client_id'))->where('finalized_at', null)->get();
 
-        if($existent->count()) {
-            return back()->withError('There is already an unfinished sale belonging to this customer. <a href="'.route('sales.show', $existent->first()).'">Click here to go to it</a>');
+        if ($existent->count()) {
+            return back()->withError('There is already an unfinished sale belonging to this customer. <a href="' . route('sales.show', $existent->first()) . '">Click here to go to it</a>');
         }
 
         $sale = $model->create($request->all());
@@ -63,10 +86,22 @@ class SaleController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+        $clients = Client::all();
+
+        return view('sales.create', compact('clients'));
+    }
+
+    /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return Response
      */
     public function show($id)
     {
@@ -78,8 +113,8 @@ class SaleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return Response
      */
     public function destroy($id)
     {
@@ -99,7 +134,7 @@ class SaleController extends Controller
         foreach ($sale->products as $sold_product) {
             $product_name = $sold_product->product->name;
             $product_stock = $sold_product->product->stock;
-            if($sold_product->qty > $product_stock) return back()->withError("The product '$product_name' does not have enough stock. Only has $product_stock units.");
+            if ($sold_product->qty > $product_stock) return back()->withError("The product '$product_name' does not have enough stock. Only has $product_stock units.");
         }
 
         foreach ($sale->products as $sold_product) {
@@ -176,7 +211,7 @@ class SaleController extends Controller
     public function storetransaction(Request $request, $id, Transaction $transaction)
     {
         $sale = Sale::find($id);
-        switch($request->all()['type']) {
+        switch ($request->all()['type']) {
             case 'income':
                 $request->merge(['title' => 'Payment Received from Sale ID: ' . $request->get('sale_id')]);
                 break;
@@ -184,8 +219,8 @@ class SaleController extends Controller
             case 'expense':
                 $request->merge(['title' => 'Sale Return Payment ID: ' . $request->all('sale_id')]);
 
-                if($request->get('amount') > 0) {
-                    $request->merge(['amount' => (float) $request->get('amount') * (-1) ]);
+                if ($request->get('amount') > 0) {
+                    $request->merge(['amount' => (float)$request->get('amount') * (-1)]);
                 }
                 break;
         }
@@ -211,16 +246,16 @@ class SaleController extends Controller
     {
         $sale = Sale::find($id);
 
-        switch($request->get('type')) {
+        switch ($request->get('type')) {
             case 'income':
-                $request->merge(['title' => 'Payment Received from Sale ID: '. $request->get('sale_id')]);
+                $request->merge(['title' => 'Payment Received from Sale ID: ' . $request->get('sale_id')]);
                 break;
 
             case 'expense':
-                $request->merge(['title' => 'Sale Return Payment ID: '. $request->get('sale_id')]);
+                $request->merge(['title' => 'Sale Return Payment ID: ' . $request->get('sale_id')]);
 
-                if($request->get('amount') > 0) {
-                    $request->merge(['amount' => (float) $request->get('amount') * (-1)]);
+                if ($request->get('amount') > 0) {
+                    $request->merge(['amount' => (float)$request->get('amount') * (-1)]);
                 }
                 break;
         }
