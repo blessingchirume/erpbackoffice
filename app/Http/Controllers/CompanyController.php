@@ -30,7 +30,7 @@ class CompanyController extends Controller
             'company_db_name' => str_replace(' ', '_', $request->get('company_name')),
         ]);
 
-        $user = \App\Models\User::factory()->create([
+        $user = User::create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
