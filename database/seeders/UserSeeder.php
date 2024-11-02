@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
             'business_type' => 'Software Development Company',
             'company_db_name' => config()->get('database.connections.application.database')
         ]);
-        $user = \App\Models\User::factory()->create([
+        $user = User::create([
             'name' => 'Blessing Chirume',
             'email' => 'chirume37@gmail.com',
             'password' => Hash::make('db$@dm1n'),
