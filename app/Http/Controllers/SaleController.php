@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Currency;
 use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\Sale;
@@ -94,7 +95,9 @@ class SaleController extends Controller
     {
         $clients = Client::all();
 
-        return view('sales.create', compact('clients'));
+        $currencies = Currency::all();
+
+        return view('sales.create', compact('clients', 'currencies'));
     }
 
     /**

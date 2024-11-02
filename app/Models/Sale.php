@@ -19,7 +19,8 @@ class Sale extends Model implements Auditable
         'user_id',
         'discount',
         'change',
-        'tendered_amount'
+        'tendered_amount',
+        'currency_id'
     ];
 
     protected $casts = [

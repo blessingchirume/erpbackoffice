@@ -7,7 +7,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 
 class ReceivedProduct extends Model implements Auditable
 {
-    use SoftDeletes, \OwenIt\Auditing\Auditable;
+    use \OwenIt\Auditing\Auditable;
 
     protected $connection = 'mysql';
 
