@@ -37,6 +37,21 @@
                                     @include('alerts.feedback', ['field' => 'client_id'])
                                 </div>
 
+                                <div class="form-group{{ $errors->has('currency_id') ? ' has-danger' : '' }}">
+                                    <input type="hidden" name="currency_id" value="{{ Auth::id() }}">
+                                    <label class="form-control-label" for="input-name">Client</label>
+                                    <select name="currency_id" id="input-category" class="form-select form-control-alternative{{ $errors->has('client') ? ' is-invalid' : '' }}" required>
+                                        @foreach ($currencies as $currency)
+                                            @if($currency['id'] == old('client'))
+                                                <option value="{{$currency['id']}}" selected>{{$currency['name']}}</option>
+                                            @else
+                                                <option value="{{$currency['id']}}">{{$currency['name']}}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    @include('alerts.feedback', ['field' => 'client_id'])
+                                </div>
+
                                 <button type="submit" class="btn btn-success mt-4">Continue</button>
                             </div>
                         </form>
