@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Constants\ApplicationPermissionConstants;
 use App\Constants\ApplicationRoleConstants;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,8 +17,27 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
+
         $superAdmin = Role::create(['name' => ApplicationRoleConstants::SuperAdmin]);
+
+        $systemAdminPermissions = [
+            ApplicationPermissionConstants::viewUserManagementModule,
+            ApplicationPermissionConstants::viewUsers,
+            ApplicationPermissionConstants::viewUser,
+            ApplicationPermissionConstants::createUser,
+            ApplicationPermissionConstants::updateUser,
+            ApplicationPermissionConstants::deleteUser,
+            ApplicationPermissionConstants::viewUserRoles,
+            ApplicationPermissionConstants::updateUserRole,
+            ApplicationPermissionConstants::revokeUserRole,
+            ApplicationPermissionConstants::attachRole,
+            ApplicationPermissionConstants::createUser,
+
+        ];
         $systemAdmin = Role::create(['name' => ApplicationRoleConstants::SystemAdmin]);
-        $superAdmin = Role::create(['name' => ApplicationRoleConstants::Teller]);
+        $systemAdmin->syncPermissions($systemAdminPermissions);
+
+
+        $teller = Role::create(['name' => ApplicationRoleConstants::Teller]);
     }
 }
