@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Constants\ApplicationRoleConstants;
 use App\Models\Company;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
