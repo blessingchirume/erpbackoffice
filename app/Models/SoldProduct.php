@@ -12,7 +12,7 @@ class SoldProduct extends Model implements Auditable
     protected $connection = 'mysql';
 
     protected $fillable = [
-        'sale_id', 'product_id', 'price', 'qty', 'total_amount', 'item_cost'
+        'sale_id', 'product_id', 'price', 'qty', 'total_amount', 'item_cost', 'applied_vat'
     ];
 
     public function product()

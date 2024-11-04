@@ -120,9 +120,17 @@ class ReceiptController extends Controller
      * @param  Receipt  $receipt
      * @return \Illuminate\Http\Response
      */
-    public function storeproduct(Request $request, $receipt)
+    public function storeproduct(Request $request, $id)
     {
-        ReceivedProduct::create($request->all());
+
+//        ReceivedProduct::create($request->all());
+
+        $product = Product::find($request->get('product_id'));
+
+        $receipt = Receipt::find($id);
+
+        $receipt->total_purchases += ($product->unit_cost * $request->get('stock'));
+        $receipt->save();
 
         return redirect()
             ->route('receipts.show', $receipt)

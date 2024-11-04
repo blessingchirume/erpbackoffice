@@ -39,6 +39,9 @@
                                         <td>{{ $transaction->reference }}</td>
                                         <td></td>
                                         <td class="td-actions text-right">
+                                            <a href="{{ route('payment.show', $transaction) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="More Details">
+                                                <i class="tim-icons icon-zoom-split"></i>
+                                            </a>
                                             <a href="{{ route('transactions.edit', $transaction) }}" class="btn btn-link" data-toggle="tooltip" data-placement="bottom" title="Edit Payment">
                                                 <i class="tim-icons icon-pencil"></i>
                                             </a>

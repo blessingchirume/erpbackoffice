@@ -236,12 +236,33 @@
                         <b class="caret mt-1"></b>
                     </a>
 
-                    <div class="collapse {{ $section == 'company' ? 'aria-expanded=true' : '' }}" id="users">
+                    <div class="collapse {{ $section == 'company' ? 'aria-expanded=true' : '' }}" id="company">
                         <ul class="nav pl-4">
                             <li @if ($pageSlug == 'company') class="active " @endif>
                                 <a href="">
                                     <i class="tim-icons icon-badge"></i>
                                     <p>My Company</p>
+                                </a>
+                            </li>
+
+                            <li @if ($pageSlug == 'currencies') @endif>
+                                <a href="{{ route('currencies.index')  }}">
+                                    <i class="tim-icons icon-badge"></i>
+                                    <p>Currencies</p>
+                                </a>
+                            </li>
+
+                            <li @if ($pageSlug == 'shops') @endif>
+                                <a href="">
+                                    <i class="tim-icons icon-badge"></i>
+                                    <p>Shops</p>
+                                </a>
+                            </li>
+
+                            <li @if ($pageSlug == 'taxes') @endif>
+                                <a href="{{ route('vat-groups.index')  }}">
+                                    <i class="tim-icons icon-badge"></i>
+                                    <p>VAT Groups</p>
                                 </a>
                             </li>
                         </ul>

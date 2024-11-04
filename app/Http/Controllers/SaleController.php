@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SoldProduct;
 use App\Models\Transaction;
+use App\Models\VatGroup;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -95,6 +96,8 @@ class SaleController extends Controller
     {
         $clients = Client::all();
 
+//        dd($clients);
+
         $currencies = Currency::all();
 
         return view('sales.create', compact('clients', 'currencies'));
@@ -156,21 +159,26 @@ class SaleController extends Controller
     public function addproduct($id)
     {
         $sale = Sale::find($id);
+        $taxes = VatGroup::all();
         $products = Product::all();
 
-        return view('sales.addproduct', compact('sale', 'products'));
+        return view('sales.addproduct', compact('sale', 'products', 'taxes'));
     }
 
     public function storeproduct(Request $request, $id, SoldProduct $soldProduct)
     {
+
         $sale = Sale::find($id);
-        $request->merge(['item_cost' => 70]);
+
+        $request->merge(['applied_vat' => (double) $request->get('applied_vat')]);
+
+        $request->merge(['price' => Product::find($request->get('product_id'))->price]);
+
+        $request->merge(['item_cost' => Product::find($request->get('product_id'))->unit_cost]);
 
         $request->merge(['total_amount' => $request->get('price') * $request->get('qty')]);
-
+//dd($request);
         $soldProduct->create($request->all());
-
-        // dd($request);
 
         return redirect()
             ->route('sales.show', ['sale' => $sale])

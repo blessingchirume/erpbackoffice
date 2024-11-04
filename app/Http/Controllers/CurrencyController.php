@@ -14,7 +14,12 @@ class CurrencyController extends Controller
      */
     public function index()
     {
-        //
+        $currencies = Currency::paginate(20);
+        return view('currencies.index', compact('currencies'));
+    }
+
+    public function create(){
+        return view('currencies.create');
     }
 
     /**
@@ -25,7 +30,15 @@ class CurrencyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $request->validate([
+            'name' => 'required',
+            'rate' => 'required'
+        ]);
+
+        Currency::create($request->all());
+
+        return redirect()->route('currencies.index')->withStatus('Currency added successfully');
     }
 
     /**
@@ -48,7 +61,14 @@ class CurrencyController extends Controller
      */
     public function update(Request $request, Currency $currency)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'rate' => 'required'
+        ]);
+
+        Currency::create($request->all());
+
+        return redirect()->route('currencies.index')->withStatus('Currency added successfully');
     }
 
     /**
@@ -57,8 +77,9 @@ class CurrencyController extends Controller
      * @param  \App\Models\Currency  $currency
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Currency $currency)
+    public function destroy($id)
     {
-        //
+        Currency::find($id)->delete();
+        return redirect()->route('currencies.index')->withStatus('Currency deleted successfully');
     }
 }

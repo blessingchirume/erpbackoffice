@@ -9,4 +9,6 @@ use OwenIt\Auditing\Contracts\Auditable;
 class Currency extends Model implements Auditable
 {
     use HasFactory, \OwenIt\Auditing\Auditable;
+
+    protected $guarded = [];
 }
