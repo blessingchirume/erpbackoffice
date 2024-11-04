@@ -43,7 +43,7 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/forgot-password', [AuthController::class, 'passwordReset']);
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => ['auth:api', 'database']], function () {
 
     Route::resources([
         'users' => UserController::class,
