@@ -6,18 +6,19 @@ use App\Models\Client;
 use App\Models\Currency;
 use App\Models\PaymentMethod;
 use App\Models\Provider;
+use App\Models\Receipt;
 use App\Models\Sale;
 use App\Models\Transaction;
 use Carbon\Carbon;
-
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TransactionController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -60,11 +61,11 @@ class TransactionController extends Controller
         $transactionsperiods['Year'] = Transaction::whereYear('created_at', Carbon::now()->year)->get();
 
         return view('transactions.stats', [
-            'clients'               => Client::where('balance', '!=', '0.00')->get(),
-            'salesperiods'          => $salesperiods,
-            'transactionsperiods'   => $transactionsperiods,
-            'date'                  => Carbon::now(),
-            'methods'               => PaymentMethod::all()
+            'clients' => Client::where('balance', '!=', '0.00')->get(),
+            'salesperiods' => $salesperiods,
+            'transactionsperiods' => $transactionsperiods,
+            'date' => Carbon::now(),
+            'methods' => PaymentMethod::all()
         ]);
     }
 
@@ -83,9 +84,85 @@ class TransactionController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function store(Request $request, Transaction $transaction)
+    {
+
+        if ($request->get('client_id')) {
+            switch ($request->get('type')) {
+                case 'income':
+                    $request->merge(['title' => 'Payment Received from Customer ID: ' . $request->get('client_id')]);
+                    break;
+
+                case 'expense':
+                    $request->merge(['title' => 'Customer ID Return Payment: ' . $request->get('client_id')]);
+
+                    if ($request->get('amount') > 0) {
+                        $request->merge(['amount' => (float)$request->get('amount') * (-1)]);
+                    }
+                    break;
+            }
+
+            $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate]);
+
+            $transaction->create($request->all());
+            $client = Client::find($request->get('client_id'));
+            $client->balance += $request->get('amount');
+            $client->save();
+
+            return redirect()
+                ->route('clients.show', $request->get('client_id'))
+                ->withStatus('Successfully registered transaction.');
+        }
+
+        switch ($request->get('type')) {
+            case 'expense':
+                if ($request->get('amount') > 0) {
+                    $request->merge(['amount' => ((float)$request->get('amount') * (-1)), 'rate' => Currency::find($request->get('currency_id'))->rate]);
+                }
+
+                $transaction->create($request->all());
+
+                return redirect()
+                    ->route('transactions.type', ['type' => 'expense'])
+                    ->withStatus('Expense recorded successfully.');
+
+            case 'payment':
+                if ($request->get('amount') > 0) {
+                    $request->merge(['amount' => ((float)$request->get('amount') * (-1)), 'rate' => Currency::find($request->get('currency_id'))->rate]);
+                }
+
+                $transaction->create($request->all());
+
+//                return redirect('/transactions/' . $transaction . '/show');
+
+                return redirect()
+                    ->route('transactions.type', ['type' => 'payment'])
+                    ->withStatus('Payment registered successfully.');
+
+            case 'income':
+                $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate]);
+                $transaction->create($request->all());
+
+                return redirect()
+                    ->route('transactions.type', ['type' => 'income'])
+                    ->withStatus('Login successfully registered.');
+
+            default:
+                return redirect()
+                    ->route('transactions.index')
+                    ->withStatus('Successfully registered transaction.');
+        }
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create($type)
     {
@@ -112,88 +189,14 @@ class TransactionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request, Transaction $transaction)
-    {
-
-        if ($request->get('client_id')) {
-            switch ($request->get('type')) {
-                case 'income':
-                    $request->merge(['title' => 'Payment Received from Customer ID: ' . $request->get('client_id')]);
-                    break;
-
-                case 'expense':
-                    $request->merge(['title' => 'Customer ID Return Payment: ' . $request->get('client_id')]);
-
-                    if ($request->get('amount') > 0) {
-                        $request->merge(['amount' => (float) $request->get('amount') * (-1)]);
-                    }
-                    break;
-            }
-
-            // dd($request->all());
-            $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate]);
-
-            $transaction->create($request->all());
-            $client = Client::find($request->get('client_id'));
-            $client->balance += $request->get('amount');
-            $client->save();
-
-            return redirect()
-                ->route('clients.show', $request->get('client_id'))
-                ->withStatus('Successfully registered transaction.');
-        }
-
-        switch ($request->get('type')) {
-            case 'expense':
-                if ($request->get('amount') > 0) {
-                    $request->merge(['amount' => ((float) $request->get('amount') * (-1)), 'rate' => Currency::find($request->get('currency_id'))->rate]);
-                }
-
-                $transaction->create($request->all());
-
-                return redirect()
-                    ->route('transactions.type', ['type' => 'expense'])
-                    ->withStatus('Expense recorded successfully.');
-
-            case 'payment':
-                if ($request->get('amount') > 0) {
-                    $request->merge(['amount' => ((float) $request->get('amount') * (-1)), 'rate' => Currency::find($request->get('currency_id'))->rate]);
-                }
-
-                $transaction->create($request->all());
-
-                return redirect()
-                    ->route('transactions.type', ['type' => 'payment'])
-                    ->withStatus('Payment registered successfully.');
-
-            case 'income':
-                $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate]);
-                $transaction->create($request->all());
-
-                return redirect()
-                    ->route('transactions.type', ['type' => 'income'])
-                    ->withStatus('Login successfully registered.');
-
-            default:
-                return redirect()
-                    ->route('transactions.index')
-                    ->withStatus('Successfully registered transaction.');
-        }
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return Response
      */
-    public function edit(Transaction $transaction)
+    public function edit($id)
     {
+        $transaction = Transaction::find($id);
         switch ($transaction->type) {
             case 'expense':
                 return view('transactions.expense.edit', [
@@ -219,21 +222,58 @@ class TransactionController extends Controller
         }
     }
 
+    public function showPayment($id)
+    {
+//        dd($id);
+        $transaction = Transaction::find($id);
+//        dd($transaction);
+        $receipts = $transaction->provider->receipts;
+//        dd($transaction->provider->receipts);
+        return view('transactions.payment.receipt', compact('transaction', 'receipts'));
+    }
+
+    public function finalizePayment(Request $request, $id)
+    {
+        $transaction = Transaction::find($id);
+
+        $transaction->amount = $request->get('amount');
+        $transaction->reference = $request->get('reference');
+        $transaction->save();
+
+//        Make deductions to provider current balance
+
+        $receipt = Receipt::find($request->get('receipt_id'));
+        $balance = $receipt->total_purchases - $receipt->total_paid;
+        $payment = (float)$request->get('amount');
+        if ($balance < $payment) {
+            return back()->withError('Amount exceeds balance for this receipt');
+        }
+
+        $receipt->total_paid += $request->get('amount');
+
+        $receipt->save();
+
+        return redirect()
+            ->route('transactions.type', ['type' => 'payment'])
+            ->withStatus('Payment registered successfully.');
+    }
+
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param int $id
+     * @return Response
      */
-    public function update(Request $request, Transaction $transaction)
+    public function update(Request $request, $id)
     {
+        $transaction = Transaction::find($id);
         $transaction->update($request->all());
 
         switch ($request->get('type')) {
             case 'expense':
                 if ($request->get('amount') > 0) {
-                    $request->merge(['amount' => ((float) $request->get('amount') * (-1))]);
+                    $request->merge(['amount' => ((float)$request->get('amount') * (-1))]);
                 }
                 return redirect()
                     ->route('transactions.type', ['type' => 'expense'])
@@ -241,7 +281,7 @@ class TransactionController extends Controller
 
             case 'payment':
                 if ($request->get('amount') > 0) {
-                    $request->merge(['amount' => ((float) $request->get('amount') * (-1))]);
+                    $request->merge(['amount' => ((float)$request->get('amount') * (-1))]);
                 }
 
                 return redirect()
@@ -263,16 +303,16 @@ class TransactionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return Response
      */
-    public function destroy(Transaction $transaction)
+    public function destroy($id)
     {
         //if ($transaction->sale)
         //{
         //    return back()->withStatus('You cannot remove a transaction from a completed sale. You can delete the sale and its entire record.');
         //}
-
+        $transaction = Transaction::find($id);
         if ($transaction->transfer) {
             return back()->withStatus('You cannot remove a transaction from a transfer. You must delete the transfer to delete its records.');
         }

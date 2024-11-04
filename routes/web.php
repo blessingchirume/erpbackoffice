@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MethodController;
@@ -17,6 +18,8 @@ use App\Http\Controllers\TenantController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VatGroupController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -52,11 +55,18 @@ Route::group(['middleware' => ['auth', 'database']], function () {
         'inventory/categories' => ProductCategoryController::class,
         'transactions/transfer' => TransferController::class,
         'methods' => MethodController::class,
+        'company/currencies' => CurrencyController::class,
+        'company/vat-groups' => VatGroupController::class,
     ]);
 
     Route::resource('companies', CompanyController::class);
 
-    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    Route::get('/', function (){
+        return redirect('/login');
+    });
+
     Route::prefix('roles')->group(function () {
         Route::get('{role}/permission/create', [RoleController::class, 'createPermissions'])->name('roles.permissions.create');
         Route::post('{role}/permission/store', [RoleController::class, 'storePermissions'])->name('roles.permissions.store');
@@ -68,6 +78,8 @@ Route::group(['middleware' => ['auth', 'database']], function () {
     Route::get('transactions/{type}', [TransactionController::class, 'type'])->name('transactions.type');
     Route::get('transactions/{type}/create', [TransactionController::class, 'create'])->name('transactions.create');
     Route::get('transactions/{transaction}/edit', [TransactionController::class, 'edit'])->name('transactions.edit');
+    Route::get('transactions/{transaction}/show', [TransactionController::class, 'showPayment'])->name('payment.show');
+    Route::post('transactions/{transaction}/finalize', [TransactionController::class, 'finalizePayment'])->name('payment.finalize');
 
     Route::get('inventory/stats/{year?}/{month?}/{day?}', [InventoryController::class, 'stats'])->name('inventory.stats');
     Route::resource('inventory/receipts', ReceiptController::class)->except(['edit', 'update']);
@@ -102,4 +114,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('notifications', [PageController::class, 'notifications'])->name('pages.notifications');
     Route::get('tables', [PageController::class, 'tables'])->name('pages.tables');
     Route::get('typography', [PageController::class, 'typography'])->name('pages.typography');
+});
+
+Route::get('/migrate', function (){
+    return Artisan::call( 'migrate', [
+        '--force' => true,
+        '--database' => 'mysql',
+        '--path' => 'database/migrations/tenant',
+    ]);
 });

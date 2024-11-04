@@ -6,6 +6,8 @@ use App\Constants\ApplicationRoleConstants;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class CompanyController extends Controller
@@ -23,6 +25,14 @@ class CompanyController extends Controller
 
         ]);
 
+        $user = User::create([
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' => Hash::make($request->get('password')),
+        ]);
+
+        $user->assignRole(ApplicationRoleConstants::SystemAdmin);
+
         $tenant = Company::create([
             'name' => $request->get('company_name'),
             'email' => $request->get('company_email'),
@@ -30,18 +40,14 @@ class CompanyController extends Controller
             'company_db_name' => str_replace(' ', '_', $request->get('company_name')),
         ]);
 
-        $user = User::create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
-            'company_id' => $tenant->id
-        ]);
+        $user->company_id = $tenant->id;
 
-        $user->assignRole(ApplicationRoleConstants::SystemAdmin);
+        $user->save();
 
         $tenant->createDatabase($tenant->company_db_name);
 
-        return response('Successfully registered tenant. DB name is ' . $tenant->company_db_name . ' store it securely');
+        return redirect('/login')->withStatus('Successfully registered tenant.\n
+         Your login credentials have been sent to the email you provided');
     }
 
     public function index()

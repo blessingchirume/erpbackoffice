@@ -40,6 +40,7 @@
                             <th>products</th>
                             <th>Total Stock</th>
                             <th>Total Cost</th>
+                            <th>Total After Vat</th>
                             <th>Status</th>
                         </thead>
                         <tbody>
@@ -51,6 +52,7 @@
                                 <td>{{ $sale->products->count() }}</td>
                                 <td>{{ $sale->products->sum('qty') }}</td>
                                 <td>{{ format_money($sale->products->sum('total_amount')) }}</td>
+                                <td>{{ format_money($sale->grand_total()) }}</td>
                                 <td>{!! $sale->finalized_at ? 'Completed at<br>'.date('d-m-y', strtotime($sale->finalized_at)) : (($sale->products->count() > 0) ? 'TO FINALIZE' : 'ON HOLD') !!}</td>
                             </tr>
                         </tbody>

@@ -34,23 +34,37 @@
                                     @include('alerts.feedback', ['field' => 'product_id'])
                                 </div>
 
-                                <div class="form-group{{ $errors->has('product_id') ? ' has-danger' : '' }}">
+                                <div class="form-group{{ $errors->has('applied_vat') ? ' has-danger' : '' }}">
+                                    <label class="form-control-label" for="input-applied_vat">Vat Group</label>
+                                    <select name="applied_vat" id="input-product" class="form-select2 form-control-alternative{{ $errors->has('applied_vat') ? ' is-invalid' : '' }}" required>
+                                        @foreach ($taxes as $tax)
+                                            @if($tax['id'] == old('applied_vat'))
+                                                <option value="{{$tax['rate']}}" selected>[{{ $tax->rate }}% - {{ $tax->name }}]</option>
+                                            @else
+                                                <option value="{{$tax['rate']}}">[{{ $tax->rate * 100 }}% - {{ $tax->name }}]</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    @include('alerts.feedback', ['field' => 'applied_vat'])
+                                </div>
+
+                                {{--<div class="form-group{{ $errors->has('price') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-price">Price per Unit</label>
-                                    <input type="number" name="price" id="input-price" step=".01" class="form-control form-control-alternative{{ $errors->has('product_id') ? ' is-invalid' : '' }}" value="0" required>
-                                    @include('alerts.feedback', ['field' => 'product_id'])
-                                </div>
+                                    <input type="number" name="price" id="input-price" step=".01" class="form-control form-control-alternative{{ $errors->has('price') ? ' is-invalid' : '' }}" value="0" required>
+                                    @include('alerts.feedback', ['field' => 'price'])
+                                </div>--}}
 
-                                <div class="form-group{{ $errors->has('product_id') ? ' has-danger' : '' }}">
+                                <div class="form-group{{ $errors->has('qty') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-qty">Quantity</label>
-                                    <input type="number" name="qty" id="input-qty" class="form-control form-control-alternative{{ $errors->has('product_id') ? ' is-invalid' : '' }}" value="0" required>
-                                    @include('alerts.feedback', ['field' => 'product_id'])
+                                    <input type="number" name="qty" id="input-qty" class="form-control form-control-alternative{{ $errors->has('qty') ? ' is-invalid' : '' }}" value="0" required>
+                                    @include('alerts.feedback', ['field' => 'qty'])
                                 </div>
 
-                                <div class="form-group{{ $errors->has('product_id') ? ' has-danger' : '' }}">
+                                {{--<div class="form-group{{ $errors->has('product_id') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-total">Total Amount</label>
                                     <input type="text" name="total_amount" id="input-total" class="form-control form-control-alternative{{ $errors->has('product_id') ? ' is-invalid' : '' }}" value="0$" disabled>
                                     @include('alerts.feedback', ['field' => 'product_id'])
-                                </div>
+                                </div>--}}
 
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-success mt-4">Continue</button>
@@ -67,6 +81,10 @@
     <script>
         new SlimSelect({
             select: '.form-select'
+        });
+
+        new SlimSelect({
+            select: '.form-select2'
         });
     </script>
     <script>

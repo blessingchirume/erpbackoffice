@@ -39,8 +39,8 @@
 
                                 <div class="form-group{{ $errors->has('currency_id') ? ' has-danger' : '' }}">
                                     <input type="hidden" name="currency_id" value="{{ Auth::id() }}">
-                                    <label class="form-control-label" for="input-name">Client</label>
-                                    <select name="currency_id" id="input-category" class="form-select form-control-alternative{{ $errors->has('client') ? ' is-invalid' : '' }}" required>
+                                    <label class="form-control-label" for="input-name">Currency</label>
+                                    <select name="currency_id" id="input-category" class="form-select2 form-control-alternative{{ $errors->has('client') ? ' is-invalid' : '' }}" required>
                                         @foreach ($currencies as $currency)
                                             @if($currency['id'] == old('client'))
                                                 <option value="{{$currency['id']}}" selected>{{$currency['name']}}</option>
@@ -66,6 +66,10 @@
     <script>
         new SlimSelect({
             select: '.form-select'
+        })
+
+        new SlimSelect({
+            select: '.form-select2'
         })
     </script>
 @endpush

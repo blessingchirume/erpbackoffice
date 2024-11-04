@@ -42,6 +42,15 @@ class Sale extends Model implements Auditable
     {
         return $this->hasMany('App\Models\SoldProduct');
     }
+
+    public function grand_total()
+    {
+        $total = 0;
+        foreach ($this->products as $product) {
+            $total += $product->total_amount + ($product->total_amount * $product->applied_vat);
+        }
+        return $total;
+    }
     public function user()
     {
         return $this->belongsTo(User::class);
