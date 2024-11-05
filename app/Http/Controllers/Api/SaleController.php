@@ -71,10 +71,13 @@ class SaleController extends Controller
 
         try {
 
+
+
             $sale = Sale::create($request->all());
 
 
             foreach ($request->products as $value) {
+
                 $this->storeproduct($value, $sale);
             }
 
@@ -117,6 +120,7 @@ class SaleController extends Controller
 
 
             Transaction::create([
+                'currency_id' => 1,
                 'client_id' => $request->client_id,
                 'user_id' => Auth::user()->id,
                 'type' => $request->all()['type'],
@@ -217,6 +221,8 @@ class SaleController extends Controller
     public function storeproduct($value, Sale $sale)
     {
         $data = [
+            "applied_vat" => $value["applied_vat"],
+            "item_cost"=> $value["item_cost"],
             "sale_id" => $sale->id,
             "product_id" => $value["product_id"],
             "price" => $value["price"],
