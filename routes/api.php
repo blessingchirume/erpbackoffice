@@ -1,24 +1,23 @@
 <?php
 
+use App\Http\Controllers\Api\CurrencyController;
 use App\Http\Controllers\Api\MethodController;
+use App\Http\Controllers\Api\ProductCategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ReceiptController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\TenantController;
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InventoryController;
-use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\Api\CurrencyController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,7 +50,7 @@ Route::group(['middleware' => ['auth:api', 'database']], function () {
         'providers' => ProviderController::class,
         'inventory/products' => ProductController::class,
         'clients' => ClientController::class,
-        // 'inventory/categories' => ApplicationController::class,
+        'inventory/categories' => ProductCategoryController::class,
         'transactions/transfer' => TransferController::class,
         'methods' => MethodController::class,
         'currencies' => CurrencyController::class,
