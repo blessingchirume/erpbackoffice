@@ -18,6 +18,7 @@ use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Api\CurrencyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +54,7 @@ Route::group(['middleware' => ['auth:api', 'database']], function () {
         // 'inventory/categories' => ApplicationController::class,
         'transactions/transfer' => TransferController::class,
         'methods' => MethodController::class,
+        'currencies' => CurrencyController::class,
     ]);
 
     Route::prefix('account')->group(function () {
