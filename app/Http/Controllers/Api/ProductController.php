@@ -43,11 +43,9 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request, Product $model)
     {
-        $model->create($request->all());
+        $product = Product::create($request->all());
 
-        return redirect()
-            ->route('products.index')
-            ->withStatus('Product successfully registered.');
+        return response("Product created successfully", 200);
     }
 
     /**
