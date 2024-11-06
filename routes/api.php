@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\MethodController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ReceiptController;
 use App\Http\Controllers\Api\ReportController;
@@ -11,7 +12,6 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InventoryController;
-use App\Http\Controllers\MethodController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProviderController;
