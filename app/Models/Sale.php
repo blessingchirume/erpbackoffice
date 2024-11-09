@@ -51,6 +51,15 @@ class Sale extends Model implements Auditable
         }
         return $total;
     }
+
+    public function costOfSales()
+    {
+        $total = 0;
+        foreach ($this->products as $product) {
+            $total += ($product->unit_price * $product->qty);
+        }
+        return $total;
+    }
     public function user()
     {
         return $this->belongsTo(User::class);

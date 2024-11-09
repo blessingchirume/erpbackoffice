@@ -107,4 +107,18 @@ class ProductController extends Controller
             ->route('products.index')
             ->withStatus('Product removed successfully.');
     }
+
+    public function import(Request $request)
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Item::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        $task = Excel::import(new ItemImport, $request->file('conf_password'));
+        if ($task) {
+            // $items = $this->sapPostBulkContainers();
+            return back()->with("success", "Operation Successful");
+        } else {
+            return back()->with("error", "Something went wrong");
+        }
+    }
 }
