@@ -6,10 +6,9 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function SalesReport() 
+    public function SalesReport()
     {
         return response([
-
             'gross_sales' => 125,
             'refunds' => 10000,
             'credit_notes' => 100,
