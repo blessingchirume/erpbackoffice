@@ -13,6 +13,7 @@
                             <div class="col-4 text-right">
                                 <a href="{{ route('products.index') }}" class="btn btn-sm btn-primary">Back to List</a>
                             </div>
+
                         </div>
                     </div>
                     <div class="card-body">
@@ -23,16 +24,21 @@
                             <div class="pl-lg-4">
                                 <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-name">Name</label>
-                                    <input type="text" name="name" id="input-name" class="form-control form-control-alternative{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="Name" value="{{ old('name') }}" required autofocus>
+                                    <input type="text" name="name" id="input-name"
+                                           class="form-control form-control-alternative{{ $errors->has('name') ? ' is-invalid' : '' }}"
+                                           placeholder="Name" value="{{ old('name') }}" required autofocus>
                                     @include('alerts.feedback', ['field' => 'name'])
                                 </div>
 
                                 <div class="form-group{{ $errors->has('product_category_id') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-name">Category</label>
-                                    <select name="product_category_id" id="input-category" class="form-select form-control-alternative{{ $errors->has('name') ? ' is-invalid' : '' }}" required>
+                                    <select name="product_category_id" id="input-category"
+                                            class="form-select form-control-alternative{{ $errors->has('name') ? ' is-invalid' : '' }}"
+                                            required>
                                         @foreach ($categories as $category)
                                             @if($category['id'] == old('document'))
-                                                <option value="{{$category['id']}}" selected>{{$category['name']}}</option>
+                                                <option value="{{$category['id']}}"
+                                                        selected>{{$category['name']}}</option>
                                             @else
                                                 <option value="{{$category['id']}}">{{$category['name']}}</option>
                                             @endif
@@ -43,28 +49,39 @@
 
                                 <div class="form-group{{ $errors->has('description') ? ' has-danger' : '' }}">
                                     <label class="form-control-label" for="input-description">Description</label>
-                                    <input type="text" name="description" id="input-description" class="form-control form-control-alternative" placeholder="Description" value="{{ old('description') }}" required>
+                                    <input type="text" name="description" id="input-description"
+                                           class="form-control form-control-alternative" placeholder="Description"
+                                           value="{{ old('description') }}" required>
                                     @include('alerts.feedback', ['field' => 'description'])
                                 </div>
                                 <div class="row">
                                     <div class="col-3">
                                         <div class="form-group{{ $errors->has('stock') ? ' has-danger' : '' }}">
                                             <label class="form-control-label" for="input-stock">Stock</label>
-                                            <input type="number" name="stock" id="input-stock" class="form-control form-control-alternative" placeholder="Stock" value="{{ old('stock') }}" required>
+                                            <input type="number" name="stock" id="input-stock"
+                                                   class="form-control form-control-alternative" placeholder="Stock"
+                                                   value="{{ old('stock') }}" required>
                                             @include('alerts.feedback', ['field' => 'stock'])
                                         </div>
                                     </div>
                                     <div class="col-3">
-                                        <div class="form-group{{ $errors->has('stock_defective') ? ' has-danger' : '' }}">
-                                            <label class="form-control-label" for="input-stock_defective">Defective Stock</label>
-                                            <input type="number" name="stock_defective" id="input-stock_defective" class="form-control form-control-alternative" placeholder="Defective Stock" value="{{ old('stock_defective') }}" required>
+                                        <div
+                                            class="form-group{{ $errors->has('stock_defective') ? ' has-danger' : '' }}">
+                                            <label class="form-control-label" for="input-stock_defective">Defective
+                                                Stock</label>
+                                            <input type="number" name="stock_defective" id="input-stock_defective"
+                                                   class="form-control form-control-alternative"
+                                                   placeholder="Defective Stock" value="{{ old('stock_defective') }}"
+                                                   required>
                                             @include('alerts.feedback', ['field' => 'stock_defective'])
                                         </div>
                                     </div>
                                     <div class="col-3">
                                         <div class="form-group{{ $errors->has('item_cost') ? ' has-danger' : '' }}">
                                             <label class="form-control-label" for="input-item-cost">Item Cost</label>
-                                            <input type="number" step=".01" name="item_cost" id="input-item-cost" class="form-control form-control-alternative" placeholder="Price" value="{{ old('item_cost') }}" required>
+                                            <input type="number" step=".01" name="item_cost" id="input-item-cost"
+                                                   class="form-control form-control-alternative" placeholder="Price"
+                                                   value="{{ old('item_cost') }}" required>
                                             @include('alerts.feedback', ['field' => 'item_cost'])
                                         </div>
                                     </div>
@@ -72,7 +89,9 @@
                                     <div class="col-3">
                                         <div class="form-group{{ $errors->has('price') ? ' has-danger' : '' }}">
                                             <label class="form-control-label" for="input-price">Price</label>
-                                            <input type="number" step=".01" name="price" id="input-price" class="form-control form-control-alternative" placeholder="Price" value="{{ old('price') }}" required>
+                                            <input type="number" step=".01" name="price" id="input-price"
+                                                   class="form-control form-control-alternative" placeholder="Price"
+                                                   value="{{ old('price') }}" required>
                                             @include('alerts.feedback', ['field' => 'price'])
                                         </div>
                                     </div>
@@ -88,6 +107,8 @@
             </div>
         </div>
     </div>
+
+
 @endsection
 
 @push('js')

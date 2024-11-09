@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Requests\ProductRequest;
+use App\Imports\ProductImport;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -28,6 +32,7 @@ class ProductController extends Controller
      */
     public function create()
     {
+        dd(1);
         $categories = ProductCategory::all();
 
         return view('inventory.products.create', compact('categories'));
@@ -111,9 +116,9 @@ class ProductController extends Controller
     public function import(Request $request)
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Item::truncate();
+        Product::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        $task = Excel::import(new ItemImport, $request->file('conf_password'));
+        $task = Excel::import(new ProductImport, $request->file('conf_password'));
         if ($task) {
             // $items = $this->sapPostBulkContainers();
             return back()->with("success", "Operation Successful");
