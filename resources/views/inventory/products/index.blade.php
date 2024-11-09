@@ -12,6 +12,9 @@
                         <div class="col-4 text-right">
                             <a href="{{ route('products.create') }}" class="btn btn-sm btn-primary">New product</a>
                         </div>
+                        <button type="button" class="btn btn-secondary float-right" style="margin-right: 5px;" data-toggle="modal" data-target="#items-upload">
+                            upload
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -65,6 +68,36 @@
                         {{ $products->links() }}
                     </nav>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="items-upload">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Upload</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info"><strong>Notice</strong> Please make sure that there are no containers
+                        pending export to BONE. otherwise they will be treated as one vessel on the prior export.
+                    </div>
+                    <form method="post" action="{{route('item.import')}}" enctype="multipart/form-data">
+                        {{ csrf_field() }}
+                        <div class="card-body">
+                            <div class="form-group">
+
+                                <input type="file"  name="conf_password">
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary float-right">Uploads</button>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>

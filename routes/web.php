@@ -81,14 +81,15 @@ Route::group(['middleware' => ['auth', 'database']], function () {
     Route::get('transactions/{transaction}/show', [TransactionController::class, 'showPayment'])->name('payment.show');
     Route::post('transactions/{transaction}/finalize', [TransactionController::class, 'finalizePayment'])->name('payment.finalize');
 
+    Route::post('inventory/upload', [ProductController::class, 'import'])->name('item.import');
     Route::get('inventory/stats/{year?}/{month?}/{day?}', [InventoryController::class, 'stats'])->name('inventory.stats');
-    Route::resource('inventory/receipts', ReceiptController::class)->except(['edit', 'update']);
-    Route::get('inventory/receipts/{receipt}/finalize', [ReceiptController::class, 'finalize'])->name('receipts.finalize');
-    Route::get('inventory/receipts/{receipt}/product/add', [ReceiptController::class, 'addproduct'])->name('receipts.product.add');
-    Route::get('inventory/receipts/{receipt}/product/{receivedproduct}/edit', [ReceiptController::class, 'editproduct'])->name('receipts.product.edit');
-    Route::post('inventory/receipts/{receipt}/product', [ReceiptController::class, 'storeproduct'])->name('receipts.product.store');
-    Route::match(['put', 'patch'], 'inventory/receipts/{receipt}/product/{receivedproduct}', [ReceiptController::class, 'updateproduct'])->name('receipts.product.update');
-    Route::delete('inventory/receipts/{receipt}/product/{receivedproduct}', [ReceiptController::class, 'destroyproduct'])->name('receipts.product.destroy');
+//    Route::resource('inventory/receipts', ReceiptController::class)->except(['edit', 'update']);
+//    Route::get('inventory/receipts/{receipt}/finalize', [ReceiptController::class, 'finalize'])->name('receipts.finalize');
+//    Route::get('inventory/receipts/{receipt}/product/add', [ReceiptController::class, 'addproduct'])->name('receipts.product.add');
+//    Route::get('inventory/receipts/{receipt}/product/{receivedproduct}/edit', [ReceiptController::class, 'editproduct'])->name('receipts.product.edit');
+//    Route::post('inventory/receipts/{receipt}/product', [ReceiptController::class, 'storeproduct'])->name('receipts.product.store');
+//    Route::match(['put', 'patch'], 'inventory/receipts/{receipt}/product/{receivedproduct}', [ReceiptController::class, 'updateproduct'])->name('receipts.product.update');
+//    Route::delete('inventory/receipts/{receipt}/product/{receivedproduct}', [ReceiptController::class, 'destroyproduct'])->name('receipts.product.destroy');
 
     Route::resource('sales', SaleController::class)->except(['edit', 'update']);
     Route::get('sales/{sale}/finalize', [SaleController::class, 'finalize'])->name('sales.finalize');
