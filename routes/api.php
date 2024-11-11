@@ -19,6 +19,8 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\ApiCompanyController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -42,6 +44,9 @@ Route::get('/tenant/{code}', [TenantController::class, 'Get']);
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/forgot-password', [AuthController::class, 'passwordReset']);
+
+Route::post('/tenants/register', [ApiCompanyController::class, 'store']);
+
 
 Route::group(['middleware' => ['auth:api', 'database']], function () {
 
