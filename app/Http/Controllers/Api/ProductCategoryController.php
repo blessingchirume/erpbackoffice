@@ -12,7 +12,13 @@ use Illuminate\Http\Request;
 class ProductCategoryController extends Controller
 {
     public function index(){
-        $categories = ProductCategory::all();
+        $categories = ProductCategory::all()->map(function ($category){
+            return [
+                'id' => $category->id,
+                'name' => $category->name,
+                'products' => $category->products->count()
+            ];
+        });
         return response($categories, 200);
     }
 
