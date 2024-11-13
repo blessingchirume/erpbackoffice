@@ -40,13 +40,11 @@ class ProductController extends Controller
         return view('inventory.products.edit', compact('product', 'categories'));
     }
 
-    public function update(ProductRequest $request, Product $product)
+    public function update(ProductRequest $request, $id)
     {
-        $product->update($request->all());
-
-        return redirect()
-            ->route('products.index')
-            ->withStatus('Product updated successfully.');
+        $product = Product::find($id);
+        $product->update($request->except('id'));
+        return response("Product updated successfully.", 200);
     }
 
     public function destroy(Product $product)
