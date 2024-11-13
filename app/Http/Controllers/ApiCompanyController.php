@@ -42,8 +42,7 @@ class ApiCompanyController extends Controller
 
         $tenant->createDatabase($tenant->company_db_name);
 
-        return response('Successfully registered tenant.\n
-         You can visit retailmate.co.zw to start adding your users', 200);
+        return response('Successfully registered tenant. Kindly login to start trading', 200);
     }
 
 }
