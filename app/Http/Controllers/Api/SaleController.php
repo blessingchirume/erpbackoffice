@@ -18,7 +18,7 @@ class SaleController extends Controller
 {
     public function index()
     {
-        $sales = Sale::all()->map(function ($sale) {
+        $sales = Sale::whereDate('create_at', date('Y/m/d'))->map(function ($sale) {
 
             return [
                 "employee" => $sale->user->name,
@@ -42,11 +42,6 @@ class SaleController extends Controller
         return response($sales);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $clients = Client::all();
@@ -54,12 +49,6 @@ class SaleController extends Controller
         return view('sales.create', compact('clients'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $existent = Sale::where('client_id', $request->get('client_id'))->where('finalized_at', null)->get();
@@ -161,23 +150,11 @@ class SaleController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show(Sale $sale)
     {
         return view('sales.show', ['sale' => $sale]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Sale $sale)
     {
         $sale->delete();
