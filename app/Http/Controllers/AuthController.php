@@ -8,39 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    /**
-     * @OA\Get(
-     *      path="/api/auth",
-     *      
-     *      tags={"Auth"},
-     *      summary="Authenticates user",
-     *      description="Returns authenticated user",
-     *      @OA\Parameter(
-     *          name="email",
-     *          description="email",
-     *          required=true,
-     *          in="query",
-     *          @OA\Schema(
-     *              type="email"
-     *          )
-     *      ),
-     * 
-     *      @OA\Response(
-     *          response=200,
-     *          description="{}"
-     *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *       security={
-     *           {"api_key_security_example": {}}
-     *       }
-     *     )
-     *
-     */
-
     public function authenticate(Request $request)
     {
         $credentials = $request->validate([
@@ -61,6 +33,36 @@ class AuthController extends Controller
     public function profile()
     {
         return response()->json(Auth::user());
+    }
+
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'phone_number' => 'required|digits:10', // Adjust the validation as per your phone number format
+            'password' => 'required|string|min:4|max:4', // Password validation
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = User::where('phone_number', $request->phone_number)->first()->load(['company']);
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid phone number or password'], 401);
+        }
+
+        // Create a token for the user
+        $token = $user->createToken('API Token')->accessToken;
+
+//        return response()->json([
+//            'message' => 'Login successful',
+//            'access_token' => $token,
+//            'token_type' => 'Bearer',
+//        ]);
+
+        return response()->json(["success" => ["userData" => $user, "token" => $token], "error" => null]);
+
     }
 
     public function update(Request $request)
@@ -124,16 +126,21 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $data = $request->validate([
-            'phone' => 'required|regex:/(0)[0-9]/|not_regex:/[a-z]/|min:10',
+        $validator = Validator::make($request->all(),[
+            'phone_number' => 'required|regex:/(0)[0-9]/|not_regex:/[a-z]/|min:10',
             'name' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
+//            'surname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => 'required|string|regex:/[0-9]/|not_regex:/[a-z]/|min:4|max:4',
         ]);
-        $data['password'] = Hash::make($request->password);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $request->merge(['password' => Hash::make($request->password)]);
         try {
-            User::create($data);
+            User::create($request->all());
             return response()->json(['success' => 'user has been created!', 'error' => null]);
         } catch (\Throwable $th) {
             return response()->json(['success' => null, 'error' => $th->getMessage()]);
