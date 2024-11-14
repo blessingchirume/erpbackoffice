@@ -32,19 +32,11 @@ class ProductController extends Controller
      */
     public function create()
     {
-        dd(1);
         $categories = ProductCategory::all();
 
         return view('inventory.products.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  App\Http\Requests\ProductRequest  $request
-     * @param  App\Product  $model
-     * @return \Illuminate\Http\Response
-     */
     public function store(ProductRequest $request, Product $model)
     {
         $model->create($request->all());

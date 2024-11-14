@@ -19,7 +19,6 @@ class SaleController extends Controller
     public function index()
     {
         $sales = Sale::whereDate('created_at', '=', date('Y/m/d'))->get()->map(function ($sale) {
-
             return [
                 "employee" => $sale->user->name,
                 "client" => $sale->client->name,
@@ -28,7 +27,6 @@ class SaleController extends Controller
                 "date" =>  Carbon::createFromFormat('Y-m-d H:i:s', $sale->created_at),
                 "total_amount" => $sale->total_amount,
                 "sold_products" => $sale->products->map(function ($product) {
-
                     return [
                         "name" => $product->product->name,
                         "qty" => $product->qty,
