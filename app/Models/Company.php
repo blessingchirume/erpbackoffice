@@ -36,6 +36,7 @@ class Company extends Model implements Auditable
             DB::reconnect('mysql');
 
             return Artisan::call( 'migrate', [
+                '--seed' => true,
                 '--force' => true,
                 '--database' => 'mysql',
                 '--path' => 'database/migrations/tenant',
