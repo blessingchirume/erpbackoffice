@@ -17,11 +17,13 @@ class ApiCompanyController extends Controller
             'business_type' => 'required',
             'name' => 'required',
             'email' => 'required',
-            'password' => 'required',
+            'password' => 'required|string|regex:/[0-9]/|not_regex:/[a-z]/|min:4|max:4',
+            'phone_number' => 'required|regex:/(0)[0-9]/|not_regex:/[a-z]/|min:10',
 
         ]);
 
         $user = User::create([
+            'phone_number' => $request->get('phone_number'),
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
