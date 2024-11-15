@@ -42,6 +42,12 @@ class Company extends Model implements Auditable
                 '--path' => 'database/migrations/tenant',
             ]);
 
+            config()->set('database.connections.inventory.database', 'retailmate');
+
+            DB::purge('inventory');
+
+            DB::reconnect('inventory');
+
             return Artisan::call( 'db:seed', [
 
                 '--force' => true,
