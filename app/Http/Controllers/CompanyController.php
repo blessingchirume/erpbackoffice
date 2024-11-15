@@ -27,7 +27,7 @@ class CompanyController extends Controller
         ]);
 
         $user = User::create([
-            'phone_numer' => $request->get('phone_number'),
+            'phone_number' => $request->get('phone_number'),
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
