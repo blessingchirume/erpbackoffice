@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Client;
 use App\Models\Currency;
 use App\Models\PaymentMethod;
 use App\Models\ProductCategory;
@@ -30,6 +31,11 @@ class DefaultDataSeeder extends Seeder
         Currency::create([
             'name' => 'USD',
             'rate' => 1.0
+        ]);
+
+        Client::create([
+            'name' => 'CASH CUSTOMER',
+            'document_id' => 1
         ]);
     }
 }
