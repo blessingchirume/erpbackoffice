@@ -36,24 +36,24 @@ class Company extends Model implements Auditable
             DB::reconnect('mysql');
 
             return Artisan::call( 'migrate', [
-
+                '--seed' => true,
                 '--force' => true,
                 '--database' => 'mysql',
                 '--path' => 'database/migrations/tenant',
             ]);
 
-            config()->set('database.connections.inventory.database', 'retailmate');
-
-            DB::purge('inventory');
-
-            DB::reconnect('inventory');
-
-            return Artisan::call( 'db:seed', [
-
-                '--force' => true,
-                '--database' => 'inventory',
-                '--path' => 'database/migrations',
-            ]);
+//            config()->set('database.connections.inventory.database', 'retailmate');
+//
+//            DB::purge('inventory');
+//
+//            DB::reconnect('inventory');
+//
+//            return Artisan::call( 'db:seed', [
+//
+//                '--force' => true,
+//                '--database' => 'inventory',
+//                '--path' => 'database/migrations',
+//            ]);
         }
 
     }
