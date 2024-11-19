@@ -23,7 +23,7 @@ class SaleController extends Controller
                 "employee" => $sale->user->name,
                 "client" => $sale->client->name,
                 "discount" => $sale->discount,
-                "tendered_amount" => 20,
+                "tendered_amount" => $sale->tendered_amount,
                 "date" =>  Carbon::createFromFormat('Y-m-d H:i:s', $sale->created_at),
                 "total_amount" => $sale->total_amount,
                 "sold_products" => $sale->products->map(function ($product) {
