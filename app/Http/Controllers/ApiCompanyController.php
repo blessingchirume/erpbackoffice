@@ -7,12 +7,13 @@ use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class ApiCompanyController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make([
             'company_name' => 'required',
             'business_type' => 'required',
             'name' => 'required',
@@ -22,29 +23,41 @@ class ApiCompanyController extends Controller
 
         ]);
 
-        $user = User::create([
-            'phone_number' => $request->get('phone_number'),
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
-        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
-        $user->assignRole(ApplicationRoleConstants::SystemAdmin);
+        try {
+            $user = User::create([
+                'phone_number' => $request->get('phone_number'),
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'password' => Hash::make($request->get('password')),
+            ]);
 
-        $tenant = Company::create([
-            'name' => $request->get('company_name'),
-            'email' => $request->get('email'),
-            'business_type' => $request->get('business_type'),
-            'company_db_name' => str_replace(' ', '_', $request->get('company_name')),
-        ]);
+            $user->assignRole(ApplicationRoleConstants::SystemAdmin);
 
-        $user->company_id = $tenant->id;
+            $tenant = Company::create([
+                'name' => $request->get('company_name'),
+                'email' => $request->get('email'),
+                'business_type' => $request->get('business_type'),
+                'company_db_name' => str_replace(' ', '_', $request->get('company_name')),
+            ]);
 
-        $user->save();
+            $user->company_id = $tenant->id;
 
-        $tenant->createDatabase($tenant->company_db_name);
+            $user->save();
 
-        return response('Successfully registered tenant. Kindly login to start trading', 200);
+            $tenant->createDatabase($tenant->company_db_name);
+
+            return response('Successfully registered tenant. Kindly login to start trading', 200);
+        }
+        catch(\Illuminate\Database\QueryException $e){
+            return response()->json([
+                'message' => 'A database error occurred.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
 }
