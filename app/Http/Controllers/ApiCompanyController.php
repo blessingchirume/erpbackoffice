@@ -13,7 +13,7 @@ class ApiCompanyController extends Controller
 {
     public function store(Request $request)
     {
-        $validator = Validator::make([
+        $validator = Validator::make($request->all(), [
             'company_name' => 'required',
             'business_type' => 'required',
             'name' => 'required',
