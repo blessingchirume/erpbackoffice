@@ -73,7 +73,7 @@ Route::group(['middleware' => ['auth:api', 'database']], function () {
     Route::get('transactions/{transaction}/edit', [TransactionController::class, 'edit'])->name('transactions.edit');
 
     Route::get('inventory/stats/{year?}/{month?}/{day?}', [InventoryController::class, 'stats'])->name('inventory.stats');
-    Route::resource('inventory/receipts', ReceiptController::class)->except(['edit', 'update']);
+//    Route::resource('inventory/receipts', ReceiptController::class)->except(['edit', 'update']);
     Route::get('inventory/receipts/{receipt}/finalize', [ReceiptController::class, 'finalize'])->name('receipts.finalize');
     Route::get('inventory/receipts/{receipt}/product/add', [ReceiptController::class, 'addproduct'])->name('receipts.product.add');
     Route::get('inventory/receipts/{receipt}/product/{receivedproduct}/edit', [ReceiptController::class, 'editproduct'])->name('receipts.product.edit');

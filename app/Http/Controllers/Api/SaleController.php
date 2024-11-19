@@ -55,29 +55,17 @@ class SaleController extends Controller
 
             return response('There is already an unfinished sale belonging to this customer.', 400);
         }
-
         try {
-
-
-
             $sale = Sale::create($request->all());
-
-
             foreach ($request->products as $value) {
-
                 $this->storeproduct($value, $sale);
             }
-
-            // Handle sale finalization
-
             $sale->total_amount = $sale->products->sum('total_amount');
-
             foreach ($sale->products as $sold_product) {
                 $product_name = $sold_product->product->name;
                 $product_stock = $sold_product->product->stock;
                 if ($sold_product->qty > $product_stock) return response("The product '$product_name' does not have enough stock. Only has $product_stock units.", 500);
             }
-
             foreach ($sale->products as $sold_product) {
                 $sold_product->product->stock -= $sold_product->qty;
                 $sold_product->product->save();
@@ -87,9 +75,6 @@ class SaleController extends Controller
             $sale->client->balance -= $sale->total_amount;
             $sale->save();
             $sale->client->save();
-
-            // Handle sale as transaction logic
-
             switch ($request->all()['type']) {
                 case 'income':
                     $request->merge(['title' => 'Payment Received from Sale ID: ' . $request->get('sale_id')]);
@@ -103,9 +88,6 @@ class SaleController extends Controller
                     }
                     break;
             }
-
-
-
             Transaction::create([
                 'currency_id' => 1,
                 'client_id' => $request->client_id,
@@ -116,11 +98,9 @@ class SaleController extends Controller
                 'reference' => 'ref',
                 'title' => 'Payment Received from Customer ID: ' . $request->client_id
             ]);
-
             $client = Client::find($request->get('client_id'));
             $client->balance += $request->get('total_amount');
             $client->save();
-
 
             $response = [
                 "id" => (int)(date('Ymd'). $sale->id),
@@ -132,7 +112,6 @@ class SaleController extends Controller
                 "date" =>  Carbon::createFromFormat('Y-m-d H:i:s', $sale->created_at),
                 "total_amount" => (Double)$sale->total_amount,
                 "sold_products" => $sale->products->map(function ($product) {
-
                     return [
                         "name" => $product->product->name,
                         "qty" => $product->qty,
