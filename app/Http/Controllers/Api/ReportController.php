@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Sale;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
@@ -17,7 +18,7 @@ class ReportController extends Controller
         $x = $sales->map(function ($p) use ($cost_of_sales) {
 
         });
-        // return response($sales);
+        // return response(Auth::user());
         return response([
 
             'gross_sales' => $sales->sum('total_amount'),
@@ -25,7 +26,9 @@ class ReportController extends Controller
             'credit_notes' => 0,
             'discounts' => $sales->sum('discount'),
             'net_sales' => $sales->sum('total_amount') - $sales->sum('discount') - $cost_of_sales,
-            'cost_of_sales' => $sales[0]->costOfSales()
+            'cost_of_sales' => $sales->sum(function ($item) {
+                return $item->costOfSales();
+            })
         ]);
     }
 }
