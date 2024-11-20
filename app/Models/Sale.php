@@ -56,7 +56,7 @@ class Sale extends Model implements Auditable
     {
         $total = 0;
         foreach ($this->products as $product) {
-            $total += ($product->unit_price * $product->qty);
+            $total += ($product->item_cost * $product->qty);
         }
         return $total;
     }
