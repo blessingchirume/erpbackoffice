@@ -46,11 +46,13 @@ class AuthController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $user = User::where('phone_number', $request->phone_number)->first()->load(['company']);
+        $user = User::where('phone_number', $request->phone_number)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid phone number or password'], 401);
         }
+
+        $user->load(['company']);
 
         // Create a token for the user
         $token = $user->createToken('API Token')->accessToken;
