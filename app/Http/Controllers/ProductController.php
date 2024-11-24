@@ -25,11 +25,6 @@ class ProductController extends Controller
         return view('inventory.products.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $categories = ProductCategory::all();
@@ -46,14 +41,10 @@ class ProductController extends Controller
             ->withStatus('Product successfully registered.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Product $product)
+    public function show($id)
     {
+        $product = Product::find($id);
+
         $solds = $product->solds()->latest()->limit(25)->get();
 
         $receiveds = $product->receiveds()->latest()->limit(25)->get();
@@ -67,8 +58,10 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit($id)
     {
+        $product = Product::find($id);
+
         $categories = ProductCategory::all();
 
         return view('inventory.products.edit', compact('product', 'categories'));
@@ -81,8 +74,10 @@ class ProductController extends Controller
      * @param  Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductRequest $request, Product $product)
+    public function update(ProductRequest $request, $id)
     {
+        $product = Product::find($id);
+
         $product->update($request->all());
 
         return redirect()
@@ -96,8 +91,10 @@ class ProductController extends Controller
      * @param  Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
+        $product = Product::find($id);
+
         $product->delete();
 
         return redirect()
