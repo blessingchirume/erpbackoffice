@@ -21,13 +21,13 @@ class ProductController extends Controller
                 "price" => $product->price,
                 "stock" => $product->stock,
                 "stock_defective" => $product->stock_defective,
-                "price_list" => [
-                    [
-                        "name" => "Price List 1",
-                        "base_price" => 1,
-                        "base_quantity" => 60
-                    ]
-                ]
+                "price_list" => $product->priceList->map(function ($price){
+                    return [
+                        "name" => $price->name,
+                        "base_price" => $price->base_price,
+                        "base_quantity" => $price->base_quantity
+                    ];
+                })
             ];
         });
 
