@@ -34,4 +34,8 @@ class Product extends Model implements Auditable
     {
         return $this->hasMany('App\Models\ReceivedProduct');
     }
+
+    public function priceList(){
+        return $this->hasMany(PriceList::class, 'product_id', 'id');
+    }
 }
