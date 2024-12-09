@@ -6,13 +6,30 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Models\ProductCategory;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::all()->map(function ($product) {
+            return [
+                "id" => $product->id,
+                "name" => $product->name,
+                "description" => $product->description,
+                "product_category_id" => $product->product_category_id,
+                "unit_cost" => $product->unit_cost,
+                "price" => $product->price,
+                "stock" => $product->stock,
+                "stock_defective" => $product->stock_defective,
+                "price_list" => [
+                    [
+                        "name" => "Price List 1",
+                        "base_price" => 1,
+                        "base_quantity" => 60
+                    ]
+                ]
+            ];
+        });
 
         return response($products);
     }

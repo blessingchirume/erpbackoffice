@@ -126,12 +126,10 @@ class SaleController extends Controller
             return response($th->getMessage(), 500);
         }
     }
-
     public function show(Sale $sale)
     {
         return view('sales.show', ['sale' => $sale]);
     }
-
     public function destroy(Sale $sale)
     {
         $sale->delete();
@@ -140,7 +138,6 @@ class SaleController extends Controller
             ->route('sales.index')
             ->withStatus('The sale record has been successfully deleted.');
     }
-
     public function finalize(Sale $sale)
     {
         return response("now we are in the finalize method");
@@ -164,14 +161,12 @@ class SaleController extends Controller
 
         return back()->withStatus('The sale has been successfully completed.');
     }
-
     public function addproduct(Sale $sale)
     {
         $products = Product::all();
 
         return view('sales.addproduct', compact('sale', 'products'));
     }
-
     public function storeproduct($value, Sale $sale)
     {
         $data = [
@@ -186,14 +181,12 @@ class SaleController extends Controller
         // $request->merge(['total_amount' => $request->get('price') * $request->get('qty')]);
         SoldProduct::create($data);
     }
-
     public function editproduct(Sale $sale, SoldProduct $soldproduct)
     {
         $products = Product::all();
 
         return view('sales.editproduct', compact('sale', 'soldproduct', 'products'));
     }
-
     public function updateproduct(Request $request, Sale $sale, SoldProduct $soldproduct)
     {
         $request->merge(['total_amount' => $request->get('price') * $request->get('qty')]);
@@ -202,21 +195,18 @@ class SaleController extends Controller
 
         return redirect()->route('sales.show', $sale)->withStatus('Product successfully modified.');
     }
-
     public function destroyproduct(Sale $sale, SoldProduct $soldproduct)
     {
         $soldproduct->delete();
 
         return back()->withStatus('The product has been disposed of successfully.');
     }
-
     public function addtransaction(Sale $sale)
     {
         $payment_methods = PaymentMethod::all();
 
         return view('sales.addtransaction', compact('sale', 'payment_methods'));
     }
-
     public function storetransaction(Request $request, Sale $sale)
     {
         return response("Now adding transaction");
@@ -255,14 +245,12 @@ class SaleController extends Controller
             ->route('sales.show', compact('sale'))
             ->withStatus('Successfully registered transaction.');
     }
-
     public function edittransaction(Sale $sale, Transaction $transaction)
     {
         $payment_methods = PaymentMethod::all();
 
         return view('sales.edittransaction', compact('sale', 'transaction', 'payment_methods'));
     }
-
     public function updatetransaction(Request $request, Sale $sale, Transaction $transaction)
     {
         switch ($request->get('type')) {
@@ -284,7 +272,6 @@ class SaleController extends Controller
             ->route('sales.show', compact('sale'))
             ->withStatus('Successfully modified transaction.');
     }
-
     public function destroytransaction(Sale $sale, Transaction $transaction)
     {
         $transaction->delete();
