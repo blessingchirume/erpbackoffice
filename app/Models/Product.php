@@ -11,6 +11,7 @@ class Product extends Model implements Auditable
     use SoftDeletes, \OwenIt\Auditing\Auditable;
     protected $connection = 'mysql';
     protected $fillable = [
+        'serial_number',
         'name',
         'description',
         'product_category_id',
