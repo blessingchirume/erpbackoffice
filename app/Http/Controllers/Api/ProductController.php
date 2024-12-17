@@ -14,6 +14,7 @@ class ProductController extends Controller
         $products = Product::all()->map(function ($product) {
             return [
                 "id" => $product->id,
+                "serial_number" => $product->serial_number,
                 "name" => $product->name,
                 "description" => $product->description,
                 "product_category_id" => $product->product_category_id,
