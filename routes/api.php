@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ReceiptController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SaleController;
 use App\Http\Controllers\Api\TenantController;
+use App\Http\Controllers\Api\VatController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\InventoryController;
@@ -65,6 +66,8 @@ Route::group(['middleware' => ['auth:api', 'database']], function () {
         Route::patch('update', [AuthController::class, 'update']);
         Route::patch('delete', [AuthController::class, 'delete']);
     });
+    Route::resource('vat', VatController::class)->except(['create', 'show']);
+
 
     Route::resource('transactions', TransactionController::class)->except(['create', 'show']);
     Route::get('transactions/stats/{year?}/{month?}/{day?}', [TransactionController::class, 'stats'])->name('transactions.stats');
