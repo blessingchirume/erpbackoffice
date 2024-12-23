@@ -40,11 +40,11 @@ class ProductController extends Controller
     {
         try {
 
-            $imageName = time().'.'.$request->file('image')->getClientOriginalExtension();
-            request()->image->move(public_path('images/uploads'), $imageName);
-            $request->merge(['image_url' => $imageName ]);
+//            $imageName = time().'.'.$request->file('image')->getClientOriginalExtension();
+//            request()->image->move(public_path('images/uploads'), $imageName);
+//            $request->merge(['image_url' => $imageName ]);
             $product = new Product();
-            Log::info( $product->create($request->validated()));
+//            Log::info( $product->create($request->validated()));
             $product->create($request->validated());
             return response("Product created successfully", 200);
         } catch (\Throwable $th) {
