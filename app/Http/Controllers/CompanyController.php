@@ -5,20 +5,18 @@ namespace App\Http\Controllers;
 use App\Constants\ApplicationRoleConstants;
 use App\Models\Company;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class CompanyController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'company_name' => 'required',
-            'company_email' => 'required',
             'business_type' => 'required',
-            'company_db_name' => 'required',
             'name' => 'required',
             'email' => 'required',
             'password' => 'required|string|regex:/[0-9]/|not_regex:/[a-z]/|min:4|max:4',
@@ -26,30 +24,44 @@ class CompanyController extends Controller
 
         ]);
 
-        $user = User::create([
-            'phone_number' => $request->get('phone_number'),
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
-        ]);
+        if ($validator->fails()) {
+            return back()->withError($validator->errors() . "\n", 422);
+        }
 
-        $user->assignRole(ApplicationRoleConstants::SystemAdmin);
+        try {
+            $user = User::create([
+                'phone_number' => $request->get('phone_number'),
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'password' => Hash::make($request->get('password')),
+            ]);
 
-        $tenant = Company::create([
-            'name' => $request->get('company_name'),
-            'email' => $request->get('company_email'),
-            'business_type' => $request->get('business_type'),
-            'company_db_name' => str_replace(' ', '_', $request->get('company_name')),
-        ]);
+            $user->assignRole(ApplicationRoleConstants::SystemAdmin);
 
-        $user->company_id = $tenant->id;
+            $tenant = Company::create([
+                'name' => $request->get('company_name'),
+                'email' => $request->get('email'),
+                'business_type' => $request->get('business_type'),
+                'company_db_name' => str_replace(' ', '_', $request->get('company_name')),
+            ]);
 
-        $user->save();
+            $user->company_id = $tenant->id;
 
-        $tenant->createDatabase($tenant->company_db_name);
+            $user->save();
 
-        return redirect('/login')->withStatus('Successfully registered tenant.\n
-         Your login credentials have been sent to the email you provided');
+            $tenant->createDatabase($tenant->company_db_name);
+
+            return redirect('/login')->withStatus('Successfully registered tenant. Kindly login to start trading');
+
+        } catch (QueryException $e) {
+            return back()->withError('A database error occurred. ' . $e->getMessage());
+        }
+
+    }
+
+    public function create()
+    {
+        return view('tenants.create');
     }
 
     public function index()
@@ -57,10 +69,5 @@ class CompanyController extends Controller
         $companies = Company::paginate(25);
 
         return view('tenants.index', compact('companies'));
-    }
-
-    public function create()
-    {
-        return view('tenants.create');
     }
 }

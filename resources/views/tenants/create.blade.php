@@ -50,14 +50,15 @@
                                                    placeholder="{{ __('Business Type') }}" value="" required>
                                             @include('alerts.feedback', ['field' => 'business_type'])
                                         </div>
-                                        <div class="form-group{{ $errors->has('company_db_name') ? ' has-danger' : '' }}">
+                                        <div class="form-group{{ $errors->has('phone_number') ? ' has-danger' : '' }}">
                                             <label class="form-control-label"
-                                                   for="company_db_name">{{ __('Company DB Name') }}</label>
-                                            <input type="text" name="company_db_name"
-                                                   id="company_db_name"
+                                                   for="company_db_name">{{ __('Phone number') }}</label>
+                                            <input type="text" name="phone_number"
+                                                   id="phone_number"
+                                                   pattern="^07\d{8}$"
                                                    class="form-control form-control-alternative"
-                                                   placeholder="{{ __('Company DB Name') }}" value="" required>
-                                            @include('alerts.feedback', ['field' => 'company_db_name'])
+                                                   placeholder="{{ __('Phone number') }}" value="" required>
+                                            @include('alerts.feedback', ['field' => 'phone_number'])
                                         </div>
                                     </div>
                                 </div>

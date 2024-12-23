@@ -38,8 +38,8 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone_number' => 'required|digits:10', // Adjust the validation as per your phone number format
-            'password' => 'required|string|min:4|max:4', // Password validation
+            'phone_number' => 'required', // Adjust the validation as per your phone number format
+            'password' => 'required', // Password validation
         ]);
 
         if ($validator->fails()) {

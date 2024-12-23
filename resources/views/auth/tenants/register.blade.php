@@ -41,14 +41,14 @@
                             @include('alerts.feedback', ['field' => 'business_type'])
                         </div>
 
-                        <div class="input-group{{ $errors->has('company_db_name') ? ' has-danger' : '' }}">
+                        <div class="input-group{{ $errors->has('phone_number') ? ' has-danger' : '' }}">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <i class="tim-icons icon-single-02"></i>
                                 </div>
                             </div>
-                            <input type="text" name="company_db_name" class="form-control {{ $errors->has('company_db_name') ? ' is-invalid' : '' }}" placeholder="App db name with no spaces" value="{{ old('company_db_name') }}">
-                            @include('alerts.feedback', ['field' => 'company_db_name'])
+                            <input type="text" name="company_db_name" class="form-control {{ $errors->has('phone_number') ? ' is-invalid' : '' }}" placeholder="phone number" value="{{ old('phone_number') }}">
+                            @include('alerts.feedback', ['field' => 'phone_number'])
                         </div>
 
                         {{--<div class="input-group{{ $errors->has('password') ? ' has-danger' : '' }}">
