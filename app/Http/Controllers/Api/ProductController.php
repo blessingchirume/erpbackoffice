@@ -44,7 +44,7 @@ class ProductController extends Controller
 //            request()->image->move(public_path('images/uploads'), $imageName);
 //            $request->merge(['image_url' => $imageName ]);
 //            Log::info( $product->create($request->validated()));
-            $model->create($request->except('image'));
+            $model->create($request->all());
             return response("Product created successfully", 200);
         } catch (\Throwable $th) {
 //            return redirect()->back()->with('error', $th->getMessage());
