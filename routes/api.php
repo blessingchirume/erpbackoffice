@@ -51,7 +51,7 @@ Route::post('/tenants/register', [ApiCompanyController::class, 'store']);
 
 Route::group(['middleware' => ['auth:api', 'database']], function () {
 
-    Route::resources([
+    Route::apiResources([
         'users' => UserController::class,
         'providers' => ProviderController::class,
         'inventory/products' => ProductController::class,
