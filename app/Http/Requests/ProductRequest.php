@@ -33,7 +33,7 @@ class ProductRequest extends FormRequest
             'price'=> 'required',
             'stock'=> 'required',
             'stock_defective'=> 'required',
-            'image_url' => 'required|image|mimes:jpeg,png,jpg|max:20480'
+//            'image_url' => 'required|image|mimes:jpeg,png,jpg|max:20480'
         ];
     }
 

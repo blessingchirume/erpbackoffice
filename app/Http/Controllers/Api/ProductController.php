@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -43,6 +44,7 @@ class ProductController extends Controller
             request()->image->move(public_path('images/uploads'), $imageName);
             $request->merge(['image_url' => $imageName ]);
             $product = new Product();
+            Log::info( $product->create($request->validated()));
             $product->create($request->validated());
             return response("Product created successfully", 200);
         } catch (\Throwable $th) {
