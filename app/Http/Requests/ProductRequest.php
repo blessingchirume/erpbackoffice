@@ -25,12 +25,15 @@ class ProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required'],
-            'product_category_id' => ['required'],
-            'description' => [],
-            'stock' => ['required'],
-            'price' => ['required'],
-            'price_wholesaler' => [],
+            'serial_number'=> 'required',
+            'name'=> 'required',
+            'description'=> 'required',
+            'product_category_id'=> 'required',
+            'unit_cost'=> 'required',
+            'price'=> 'required',
+            'stock'=> 'required',
+            'stock_defective'=> 'required',
+            'image_url' => 'required|image|mimes:jpeg,png,jpg|max:20480'
         ];
     }
 
@@ -43,5 +46,18 @@ class ProductRequest extends FormRequest
     {
         return [
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+        // You can cast the request data here if necessary
+        $this->merge([
+            'product_category_id' => (int) $this->product_category_id,
+            'unit_cost' => (float) $this->unit_cost,
+            'product_price' => (float) $this->product_price,
+            'price' => (float) $this->price,
+            'stock' => (int) $this->stock,
+            'stock_defective' => (int) $this->stock_defective, // Cast to float
+        ]);
     }
 }

@@ -37,32 +37,20 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request, Product $model)
     {
-        $data = $request->validate([
-            'serial_number'=> 'required',
-            'name'=> 'required',
-            'description'=> 'required',
-            'product_category_id'=> 'required',
-            'unit_cost'=> 'required',
-            'price'=> 'required',
-            'stock'=> 'required',
-            'stock_defective'=> 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:20480'
-        ]);
-
-//        return $request;
-
         try {
 
             $imageName = time().'.'.$request->file('image')->getClientOriginalExtension();
             request()->image->move(public_path('images/uploads'), $imageName);
-
-            $user = new Item();
-            $user->create($request->except('image'));
-            return redirect()->route('item.index')->with('success', 'product item created successfully');
+            $request->merge(['image_url' => $imageName ]);
+            $product = new Product();
+            $product->create($request->validated());
+            return response("Product created successfully", 200);
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', $th->getMessage());
+//            return redirect()->back()->with('error', $th->getMessage());
+            return response($th->getMessage(), 500);
+
         }
-        $product = Product::create($request->all());
+//        $product = Product::create($request->all());
 
         return response("Product created successfully", 200);
     }
