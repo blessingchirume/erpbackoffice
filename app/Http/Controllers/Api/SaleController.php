@@ -18,7 +18,7 @@ class SaleController extends Controller
 {
     public function index()
     {
-        $sales = Sale::whereDate('created_at', '=', date('Y/m/d'))->get()->map(function ($sale) {
+        $sales = Sale::whereDate('created_at', '=', date('Y/m/d'))->where('shop_id', Auth::user()->shop->id)->get()->map(function ($sale) {
             return [
                 "employee" => $sale->user->name,
                 "client" => $sale->client->name,
@@ -40,13 +40,6 @@ class SaleController extends Controller
         return response($sales);
     }
 
-    public function create()
-    {
-        $clients = Client::all();
-
-        return view('sales.create', compact('clients'));
-    }
-
     public function store(Request $request)
     {
         $existent = Sale::where('client_id', $request->get('client_id'))->where('finalized_at', null)->get();
@@ -55,6 +48,9 @@ class SaleController extends Controller
 
             return response('There is already an unfinished sale belonging to this customer.', 400);
         }
+
+        $request->merge(['shop_id' => Auth::user()->shop->id]);
+
         try {
             $sale = Sale::create($request->all());
             foreach ($request->products as $value) {
@@ -96,7 +92,8 @@ class SaleController extends Controller
                 'payment_method_id' => "1",
                 'amount' => $sale->total_amount,
                 'reference' => 'ref',
-                'title' => 'Payment Received from Customer ID: ' . $request->client_id
+                'title' => 'Payment Received from Customer ID: ' . $request->client_id,
+                'shop_id' => $sale->shop_id
             ]);
             $client = Client::find($request->get('client_id'));
             $client->balance += $request->get('total_amount');
@@ -126,47 +123,7 @@ class SaleController extends Controller
             return response($th->getMessage(), 500);
         }
     }
-    public function show(Sale $sale)
-    {
-        return view('sales.show', ['sale' => $sale]);
-    }
-    public function destroy(Sale $sale)
-    {
-        $sale->delete();
 
-        return redirect()
-            ->route('sales.index')
-            ->withStatus('The sale record has been successfully deleted.');
-    }
-    public function finalize(Sale $sale)
-    {
-        return response("now we are in the finalize method");
-        $sale->total_amount = $sale->products->sum('total_amount');
-
-        foreach ($sale->products as $sold_product) {
-            $product_name = $sold_product->product->name;
-            $product_stock = $sold_product->product->stock;
-            if ($sold_product->qty > $product_stock) return back()->withError("The product '$product_name' does not have enough stock. Only has $product_stock units.");
-        }
-
-        foreach ($sale->products as $sold_product) {
-            $sold_product->product->stock -= $sold_product->qty;
-            $sold_product->product->save();
-        }
-
-        $sale->finalized_at = Carbon::now()->toDateTimeString();
-        $sale->client->balance -= $sale->total_amount;
-        $sale->save();
-        $sale->client->save();
-
-        return back()->withStatus('The sale has been successfully completed.');
-    }
-    public function addproduct(Sale $sale)
-    {
-        $products = Product::all();
-
-        return view('sales.addproduct', compact('sale', 'products'));
-    }
     public function storeproduct($value, Sale $sale)
     {
         $data = [
@@ -178,35 +135,9 @@ class SaleController extends Controller
             "qty" => $value["qty"],
             "total_amount" =>  $value["price"] * $value["qty"]
         ];
-        // $request->merge(['total_amount' => $request->get('price') * $request->get('qty')]);
         SoldProduct::create($data);
     }
-    public function editproduct(Sale $sale, SoldProduct $soldproduct)
-    {
-        $products = Product::all();
 
-        return view('sales.editproduct', compact('sale', 'soldproduct', 'products'));
-    }
-    public function updateproduct(Request $request, Sale $sale, SoldProduct $soldproduct)
-    {
-        $request->merge(['total_amount' => $request->get('price') * $request->get('qty')]);
-
-        $soldproduct->update($request->all());
-
-        return redirect()->route('sales.show', $sale)->withStatus('Product successfully modified.');
-    }
-    public function destroyproduct(Sale $sale, SoldProduct $soldproduct)
-    {
-        $soldproduct->delete();
-
-        return back()->withStatus('The product has been disposed of successfully.');
-    }
-    public function addtransaction(Sale $sale)
-    {
-        $payment_methods = PaymentMethod::all();
-
-        return view('sales.addtransaction', compact('sale', 'payment_methods'));
-    }
     public function storetransaction(Request $request, Sale $sale)
     {
         return response("Now adding transaction");
@@ -245,12 +176,7 @@ class SaleController extends Controller
             ->route('sales.show', compact('sale'))
             ->withStatus('Successfully registered transaction.');
     }
-    public function edittransaction(Sale $sale, Transaction $transaction)
-    {
-        $payment_methods = PaymentMethod::all();
 
-        return view('sales.edittransaction', compact('sale', 'transaction', 'payment_methods'));
-    }
     public function updatetransaction(Request $request, Sale $sale, Transaction $transaction)
     {
         switch ($request->get('type')) {
@@ -271,11 +197,5 @@ class SaleController extends Controller
         return redirect()
             ->route('sales.show', compact('sale'))
             ->withStatus('Successfully modified transaction.');
-    }
-    public function destroytransaction(Sale $sale, Transaction $transaction)
-    {
-        $transaction->delete();
-
-        return back()->withStatus('Transaction deleted successfully.');
     }
 }

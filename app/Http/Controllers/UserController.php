@@ -6,6 +6,7 @@ use App\Constants\ApplicationPermissionConstants;
 use App\Constants\ApplicationRoleConstants;
 use App\Http\Requests\UserRequest;
 use App\Models\Role;
+use App\Models\Shop;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +31,24 @@ class UserController extends Controller
             abort(401);
         }
         $roles = Role::whereNot('name', ApplicationRoleConstants::SuperAdmin)->get();
-        return view('users.create', compact('roles'));
+
+        if (!Auth::user()->company->company_db_name) {
+            return response()->json(['error' => 'Tenant database not found for this user'], 404);
+        }
+    
+        // Set up the dynamic connection
+        config(['database.connections.dynamic' => array_merge(
+            config('database.connections.mysql'), // Base tenant connection
+            ['database' => Auth::user()->company->company_db_name]        // Set tenant database
+        )]);
+    
+        // Purge any previous connection cache
+        DB::purge('dynamic');
+    
+        // Query shops using the dynamic connection
+        $shops = Shop::on('dynamic')->get();
+
+        return view('users.create', compact('roles', 'shops'));
     }
 
     public function store(UserRequest $request)
@@ -46,12 +64,13 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => $request->password,
             'company_id' => $request->company_id,
+            'shop_id' => $request->shop_id,
             "created_at" => Carbon::now()
         ]);
 
         $user = User::find($id);
 
-        $user->assignRole(Role::findById($request->get('user_role_id')));
+        $user->assignRole(Role::findById($request->get('user_role_id'))->name);
 
         return redirect()->route('users.index')->withStatus('User successfully created.');
     }
@@ -61,7 +80,21 @@ class UserController extends Controller
         if (!Gate::allows(ApplicationPermissionConstants::updateUser)) {
             abort(401);
         }
-        return view('users.edit', compact('user'));
+        $roles = Role::whereNot('name', ApplicationRoleConstants::SuperAdmin)->get();
+
+        // Set up the dynamic connection
+        config(['database.connections.dynamic' => array_merge(
+            config('database.connections.mysql'), // Base tenant connection
+            ['database' => Auth::user()->company->company_db_name]        // Set tenant database
+        )]);
+    
+        // Purge any previous connection cache
+        DB::purge('dynamic');
+    
+        // Query shops using the dynamic connection
+        $shops = Shop::on('dynamic')->get();
+
+        return view('users.edit', compact('user', 'roles', 'shops'));
     }
 
     public function update(UserRequest $request, User $user)
@@ -85,6 +118,7 @@ class UserController extends Controller
         if (!Gate::allows(ApplicationPermissionConstants::deleteUser)) {
             abort(401);
         }
+        
         $user->delete();
 
         return redirect()->route('users.index')->withStatus('User successfully deleted.');

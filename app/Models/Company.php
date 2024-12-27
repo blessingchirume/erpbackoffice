@@ -41,24 +41,16 @@ class Company extends Model implements Auditable
                 '--database' => 'mysql',
                 '--path' => 'database/migrations/tenant',
             ]);
-
-//            config()->set('database.connections.inventory.database', 'retailmate');
-//
-//            DB::purge('inventory');
-//
-//            DB::reconnect('inventory');
-//
-//            return Artisan::call( 'db:seed', [
-//
-//                '--force' => true,
-//                '--database' => 'inventory',
-//                '--path' => 'database/migrations',
-//            ]);
         }
-
     }
 
     public function users(){
         return $this->hasMany(User::class);
     }
+
+    public function defaultUser(){
+        return $this->hasMany(User::class)->first();
+    }
+
+
 }

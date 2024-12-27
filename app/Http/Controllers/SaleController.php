@@ -7,6 +7,7 @@ use App\Models\Currency;
 use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\Sale;
+use App\Models\Shop;
 use App\Models\SoldProduct;
 use App\Models\Transaction;
 use App\Models\VatGroup;
@@ -40,7 +41,7 @@ class SaleController extends Controller
             case 'date':
                 return view('sales.filters.date_filter');
             case 'shop':
-                $shops = [];
+                $shops = Shop::all();
                 return view('sales.filters.shop_filter', compact('shops'));
         }
 
@@ -55,7 +56,7 @@ class SaleController extends Controller
 
     public function shopSales(Request $request)
     {
-        $sales = Sale::where('user_id', $request->get('user_id'))->paginate(25);
+        $sales = Sale::where('shop_id', $request->get('shop_id'))->paginate(25);
         return view('sales.index', compact('sales'));
     }
 
@@ -79,6 +80,8 @@ class SaleController extends Controller
         if ($existent->count()) {
             return back()->withError('There is already an unfinished sale belonging to this customer. <a href="' . route('sales.show', $existent->first()) . '">Click here to go to it</a>');
         }
+
+        $request->merge(['shop_id' => Auth::user()->shop->id]);
 
         $sale = $model->create($request->all());
 

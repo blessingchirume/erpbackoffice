@@ -9,17 +9,28 @@ class ShopController extends Controller
 {
     public function index()
     {
+        $shops = Shop::paginate(25);
 
+        return view('shops.index', compact('shops'));
     }
 
-    public function store(Request $request)
+    public function create()
     {
-        //
+        return view('shops.create');
     }
 
-    public function show(Shop $shop)
+    public function store(Request $request, Shop $shop)
     {
-        //
+        $shop->create($request->all());
+
+        return redirect()
+            ->route('shops.index')
+            ->withStatus('Successfully Registered Shop.');
+    }
+    public function show($id)
+    {
+        $shop = Shop::find($id);
+        return view('shops.show', compact('shop'));
     }
 
     public function update(Request $request, Shop $shop)

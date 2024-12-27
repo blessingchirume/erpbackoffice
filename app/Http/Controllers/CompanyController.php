@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Constants\ApplicationRoleConstants;
+use App\Helpers\DynamicDatabaseConnection;
 use App\Models\Company;
+use App\Models\Shop;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -45,11 +47,15 @@ class CompanyController extends Controller
                 'company_db_name' => str_replace(' ', '_', $request->get('company_name')),
             ]);
 
+            $tenant->createDatabase($tenant->company_db_name);
+
             $user->company_id = $tenant->id;
 
-            $user->save();
+            $connection = new DynamicDatabaseConnection();
 
-            $tenant->createDatabase($tenant->company_db_name);
+            $user->shop_id = Shop::on($connection->getDynamicConnection($tenant->company_db_name))->orderBy('id', 'asc')->first()->id;
+
+            $user->save();
 
             return redirect('/login')->withStatus('Successfully registered tenant. Kindly login to start trading');
 

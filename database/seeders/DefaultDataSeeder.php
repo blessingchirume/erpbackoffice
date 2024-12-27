@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Currency;
 use App\Models\PaymentMethod;
 use App\Models\ProductCategory;
+use App\Models\Shop;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -36,6 +37,11 @@ class DefaultDataSeeder extends Seeder
         Client::create([
             'name' => 'CASH CUSTOMER',
             'document_id' => 1
+        ]);
+
+        Shop::create([
+            'name' => 'Default Shop',
+            'address' => ""
         ]);
     }
 }

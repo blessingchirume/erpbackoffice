@@ -14,7 +14,7 @@ class Transaction extends Model implements Auditable
     protected $connection = 'mysql';
 
     protected $fillable = [
-        'title', 'reference', 'amount', 'payment_method_id', 'type', 'client_id', 'user_id', 'sale_id', 'provider_id', 'transfer_id', 'currency_id', 'rate'
+        'title', 'reference', 'amount', 'payment_method_id', 'type', 'client_id', 'user_id', 'sale_id', 'provider_id', 'transfer_id', 'currency_id', 'rate', 'shop_id'
     ];
 
     public function method()

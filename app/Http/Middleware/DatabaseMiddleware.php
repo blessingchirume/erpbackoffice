@@ -20,11 +20,8 @@ class DatabaseMiddleware
     {
      
         $user = Auth::user();
-    //    dd($user->company);
         config()->set('database.connections.mysql.database', $user->company->company_db_name);
-
         DB::purge('mysql');
-
         DB::reconnect('mysql');
         return $next($request);
     }

@@ -11,10 +11,11 @@ use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 use Spatie\Permission\Traits\HasRoles;
+use App\Traits\DynamicRelationships;
 
 class User extends Authenticatable implements AuditableContract
 {
-    use Auditable, HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use Auditable, HasApiTokens, HasFactory, Notifiable, HasRoles, DynamicRelationships;
 
     protected $connection = 'application';
 
@@ -27,7 +28,8 @@ class User extends Authenticatable implements AuditableContract
         'name',
         'email',
         'password',
-        'phone_number'
+        'phone_number',
+        'shop_id'
     ];
 
     /**
@@ -55,5 +57,10 @@ class User extends Authenticatable implements AuditableContract
 
     public function company(){
         return $this->belongsTo(Company::class);
+    }
+
+    public function shop()
+    {
+        return $this->belongsToDynamic(Shop::class, 'shop_id', 'id', $this->company->company_db_name);
     }
 }

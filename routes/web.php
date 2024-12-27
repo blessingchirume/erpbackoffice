@@ -14,6 +14,7 @@ use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransferController;
@@ -56,6 +57,7 @@ Route::group(['middleware' => ['auth', 'database']], function () {
         'transactions/transfer' => TransferController::class,
         'methods' => MethodController::class,
         'company/currencies' => CurrencyController::class,
+        'company/shops' => ShopController::class,
         'company/vat-groups' => VatGroupController::class,
     ]);
 
@@ -101,12 +103,23 @@ Route::group(['middleware' => ['auth', 'database']], function () {
     Route::get('sales/filter/{filter_type}', [SaleController::class, 'filter'])->name('sales.filter');
     Route::post('sales/employee', [SaleController::class, 'employeeSales'])->name('sales.employee');
     Route::post('sales/date', [SaleController::class, 'dailySales'])->name('sales.daily');
+    Route::post('sales/shop', [SaleController::class, 'shopSales'])->name('sales.shop');
+
 
     Route::get('clients/{client}/transactions/add', [ClientController::class, 'addtransaction'])->name('clients.transactions.add');
 
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::match(['put', 'patch'], 'profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::match(['put', 'patch'], 'profile/password', [ProfileController::class, 'password'])->name('profile.password');
+
+    // run migratons to a currently active connection 
+    Route::get('/migrate', function (){
+        return Artisan::call( 'migrate', [
+            '--force' => true,
+            '--database' => 'mysql',
+            '--path' => '/database/migrations/tenant',
+        ]);
+    });
 });
 
 
@@ -117,10 +130,4 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('typography', [PageController::class, 'typography'])->name('pages.typography');
 });
 
-Route::get('/migrate', function (){
-    return Artisan::call( 'migrate', [
-        '--force' => true,
-        '--database' => 'mysql',
-        '--path' => 'database/migrations/tenant',
-    ]);
-});
+

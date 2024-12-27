@@ -253,7 +253,7 @@
                             </li>
 
                             <li @if ($pageSlug == 'shops') @endif>
-                                <a href="">
+                                <a href="{{ route('shops.index') }}">
                                     <i class="tim-icons icon-badge"></i>
                                     <p>Shops</p>
                                 </a>
