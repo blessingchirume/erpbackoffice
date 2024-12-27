@@ -17,20 +17,19 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form method="post" action="{{ route('sales.employee') }}" autocomplete="off">
+                        <form method="post" action="{{ route('sales.shop') }}" autocomplete="off">
                             @csrf
 
-                            <h6 class="heading-small text-muted mb-4">Employee information</h6>
+                            <h6 class="heading-small text-muted mb-4">Shop information</h6>
                             <div class="pl-lg-4">
-                                <div class="form-group{{ $errors->has('client_id') ? ' has-danger' : '' }}">
-                                    <input type="hidden" name="user_id" value="{{ Auth::id() }}">
-                                    <label class="form-control-label" for="input-name">Client</label>
-                                    <select name="user_id" id="input-category" class="form-select form-control-alternative{{ $errors->has('client') ? ' is-invalid' : '' }}" required>
+                                <div class="form-group{{ $errors->has('shop_id') ? ' has-danger' : '' }}">
+                                    <label class="form-control-label" for="input-name">Shop</label>
+                                    <select name="shop_id" id="input-category" class="form-select form-control-alternative{{ $errors->has('shop_id') ? ' is-invalid' : '' }}" required>
                                         @foreach ($shops as $shop)
-                                            @if($shop['id'] == old('client'))
-                                                <option value="{{$shop['id']}}" selected>{{$shop['name']}}</option>
+                                            @if($shop->id == old('client'))
+                                                <option value="{{$shop->id}}" selected>{{$shop->name}}</option>
                                             @else
-                                                <option value="{{$shop['id']}}">{{$shop['name']}}</option>
+                                                <option value="{{$shop->id}}">{{$shop->name}}</option>
                                             @endif
                                         @endforeach
                                     </select>

@@ -44,32 +44,14 @@ class ProductController extends Controller
 //            request()->image->move(public_path('images/uploads'), $imageName);
 //            $request->merge(['image_url' => $imageName ]);
 //            Log::info( $product->create($request->validated()));
-            $model->create($request->all());
+            $model->create($request->validated());
             return response("Product created successfully", 200);
         } catch (\Throwable $th) {
-//            return redirect()->back()->with('error', $th->getMessage());
             return response($th->getMessage(), 500);
 
         }
-//        $product = Product::create($request->all());
 
         return response("Product created successfully", 200);
-    }
-
-    public function show(Product $product)
-    {
-        $solds = $product->solds()->latest()->limit(25)->get();
-
-        $receiveds = $product->receiveds()->latest()->limit(25)->get();
-
-        return view('inventory.products.show', compact('product', 'solds', 'receiveds'));
-    }
-
-    public function edit(Product $product)
-    {
-        $categories = ProductCategory::all();
-
-        return view('inventory.products.edit', compact('product', 'categories'));
     }
 
     public function update(ProductRequest $request, $id)

@@ -12,7 +12,7 @@ class Receipt extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
-        'title', 'provider_id', 'user_id', 'currency_id', 'rate'
+        'title', 'provider_id', 'user_id', 'currency_id', 'rate', 'shop_id'
     ];
 
     public function provider()

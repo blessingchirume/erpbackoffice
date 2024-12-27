@@ -12,6 +12,7 @@ use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -107,7 +108,7 @@ class TransactionController extends Controller
                     break;
             }
 
-            $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate]);
+            $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate, 'shop_id' => Auth::user()->shop->id]);
 
             $transaction->create($request->all());
             $client = Client::find($request->get('client_id'));
@@ -122,7 +123,7 @@ class TransactionController extends Controller
         switch ($request->get('type')) {
             case 'expense':
                 if ($request->get('amount') > 0) {
-                    $request->merge(['amount' => ((float)$request->get('amount') * (-1)), 'rate' => Currency::find($request->get('currency_id'))->rate]);
+                    $request->merge(['amount' => ((float)$request->get('amount') * (-1)), 'rate' => Currency::find($request->get('currency_id'))->rate, 'shop_id' => Auth::user()->shop->id]);
                 }
 
                 $transaction->create($request->all());
@@ -133,7 +134,7 @@ class TransactionController extends Controller
 
             case 'payment':
                 if ($request->get('amount') > 0) {
-                    $request->merge(['amount' => ((float)$request->get('amount') * (-1)), 'rate' => Currency::find($request->get('currency_id'))->rate]);
+                    $request->merge(['amount' => ((float)$request->get('amount') * (-1)), 'rate' => Currency::find($request->get('currency_id'))->rate, 'shop_id' => Auth::user()->shop->id]);
                 }
 
                 $transaction->create($request->all());
@@ -145,7 +146,7 @@ class TransactionController extends Controller
                     ->withStatus('Payment registered successfully.');
 
             case 'income':
-                $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate]);
+                $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate, 'shop_id' => Auth::user()->shop->id]);
                 $transaction->create($request->all());
 
                 return redirect()

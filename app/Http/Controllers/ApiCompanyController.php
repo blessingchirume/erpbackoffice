@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Constants\ApplicationRoleConstants;
+use App\Helpers\DynamicDatabaseConnection;
 use App\Models\Company;
+use App\Models\Shop;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -44,11 +46,15 @@ class ApiCompanyController extends Controller
                 'company_db_name' => str_replace(' ', '_', $request->get('company_name')),
             ]);
 
-            $user->company_id = $tenant->id;
+            $tenant->createDatabase($tenant->company_db_name);
+
+            $user->company_id = $tenant->id;  
+            
+            $connection = new DynamicDatabaseConnection();
+
+            $user->shop_id = Shop::on($connection->getDynamicConnection($tenant->company_db_name))->orderBy('id', 'asc')->first()->id;
 
             $user->save();
-
-            $tenant->createDatabase($tenant->company_db_name);
 
             return response('Successfully registered tenant. Kindly login to start trading', 200);
         }

@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">Provider Information</h4>
+                    <h4 class="card-title">Shop Information</h4>
                 </div>
                 <div class="card-body">
                     <table class="table">
@@ -13,24 +13,18 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Address</th>
-                            <th>Description</th>
-                            <th>Email</th>
-                            <th>Telephone</th>
-                            <th>Payment information</th>
+                            
                             <th>Payments Made</th>
                             <th>Total Payment</th>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ $provider->id }}</td>
-                                <td>{{ $provider->name }}</td>
-                                <td>{{ $provider->address }}</td>
-                                <td>{{ $provider->description }}</td>
-                                <td>{{ $provider->email }}</td>
-                                <td>{{ $provider->phone }}</td>
-                                <td style="max-width: 175px">{{ $provider->paymentinfo }}</td>
-                                <td>{{ $provider->transactions->count() }}</td>
-                                <td>{{ format_money(abs($provider->transactions->sum('amount'))) }}</td>
+                                <td>{{ $shop->id }}</td>
+                                <td>{{ $shop->name }}</td>
+                                <td>{{ $shop->address }}</td>
+                                
+                               <td>{{ $shop->transactions->count() }}</td>
+                                <td>{{ format_money(abs($shop->transactions->sum('amount'))) }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -55,7 +49,7 @@
                             <th>Reference</th>
                         </thead>
                         <tbody>
-                            @foreach ($transactions as $transaction)
+                            @foreach ($shop->transactions as $transaction)
                                 <tr>
                                     <td>{{ date('d-m-y', strtotime($transaction->created_at)) }}</td>
                                     <td>{{ $transaction->id }}</td>
@@ -90,7 +84,7 @@
                             <th></th>
                         </thead>
                         <tbody>
-                            @foreach ($receipts as $receipt)
+                            @foreach ($shop->receipts as $receipt)
                                 <tr>
                                     <td>{{ date('d-m-y', strtotime($receipt->created_at)) }}</td>
                                     <td><a href="{{ route('receipts.show', $receipt) }}">{{ $receipt->id }}</a></td>

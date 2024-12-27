@@ -9,6 +9,7 @@ use App\Models\Receipt;
 use App\Models\ReceivedProduct;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReceiptController extends Controller
 {
@@ -43,7 +44,7 @@ class ReceiptController extends Controller
      */
     public function store(Request $request, Receipt $receipt)
     {
-        $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate]);
+        $request->merge(['rate' => Currency::find($request->get('currency_id'))->rate, 'shop_id' => Auth::user()->shop->id]);
         $receipt = $receipt->create($request->all());
 
         return redirect()
