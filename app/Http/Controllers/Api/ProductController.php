@@ -16,6 +16,7 @@ class ProductController extends Controller
             return [
                 "id" => $product->id,
                 "serial_number" => $product->serial_number,
+                "image_url" => $product->image_url,
                 "name" => $product->name,
                 "description" => $product->description,
                 "product_category_id" => $product->product_category_id,
@@ -39,12 +40,25 @@ class ProductController extends Controller
     public function store(ProductRequest $request, Product $model)
     {
         try {
-
-//            $imageName = time().'.'.$request->file('image')->getClientOriginalExtension();
-//            request()->image->move(public_path('images/uploads'), $imageName);
-//            $request->merge(['image_url' => $imageName ]);
-//            Log::info( $product->create($request->validated()));
             $model->create($request->validated());
+            return response("Product created successfully", 200);
+        } catch (\Throwable $th) {
+            return response($th->getMessage(), 500);
+
+        }
+
+        return response("Product created successfully", 200);
+    }
+
+    public function storeWithImage(ProductRequest $request, Product $model)
+    {
+        try {
+
+            $imageName = time().'.'.$request->file('image')->getClientOriginalExtension();
+            request()->image->move(public_path('images/uploads'), $imageName);
+            $request->merge(['image_url' => url('images/uploads/'.$imageName) ]);
+
+            $model->create($request->except('image'));
             return response("Product created successfully", 200);
         } catch (\Throwable $th) {
             return response($th->getMessage(), 500);
@@ -61,12 +75,4 @@ class ProductController extends Controller
         return response("Product updated successfully.", 200);
     }
 
-    public function destroy(Product $product)
-    {
-        $product->delete();
-
-        return redirect()
-            ->route('products.index')
-            ->withStatus('Product removed successfully.');
-    }
 }

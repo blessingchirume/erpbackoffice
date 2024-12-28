@@ -75,9 +75,10 @@ Route::group(['middleware' => ['auth:api', 'database']], function () {
     Route::get('transactions/{type}/create', [TransactionController::class, 'create'])->name('transactions.create');
     Route::get('transactions/{transaction}/edit', [TransactionController::class, 'edit'])->name('transactions.edit');
 
-    Route::get('inventory/stats/{year?}/{month?}/{day?}', [InventoryController::class, 'stats'])->name('inventory.stats');
+    Route::post('inventory/products/image', [ProductController::class, 'storeWithImage']);
+    Route::get('inventory/stats/{year?}/{month?}/{day?}', [InventoryController::class, 'stats']);
     Route::resource('inventory/receipts', ReceiptController::class)->except(['edit', 'update']);
-    Route::get('inventory/receipts/{receipt}/finalize', [ReceiptController::class, 'finalize'])->name('receipts.finalize');
+    Route::get('inventory/receipts/{receipt}/finalize', [ReceiptController::class, 'finalize']);
     Route::get('inventory/receipts/{receipt}/product/add', [ReceiptController::class, 'addproduct'])->name('receipts.product.add');
     Route::get('inventory/receipts/{receipt}/product/{receivedproduct}/edit', [ReceiptController::class, 'editproduct'])->name('receipts.product.edit');
     Route::post('inventory/receipts/{receipt}/product', [ReceiptController::class, 'storeproduct'])->name('receipts.product.store');
