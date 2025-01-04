@@ -29,7 +29,8 @@ class User extends Authenticatable implements AuditableContract
         'email',
         'password',
         'phone_number',
-        'shop_id'
+        'shop_id',
+        'device_id'
     ];
 
     /**

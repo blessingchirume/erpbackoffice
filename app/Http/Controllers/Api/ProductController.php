@@ -7,6 +7,7 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Validator;
 
 class ProductController extends Controller
 {
@@ -53,6 +54,20 @@ class ProductController extends Controller
     public function storeWithImage(ProductRequest $request, Product $model)
     {
         try {
+//            $validator = Validator::make($request->all(), [
+//                'name'=> 'required',
+//                'description'=> 'required',
+//                'product_category_id'=> 'required',
+//                'unit_cost'=> 'required',
+//                'price'=> 'required',
+//                'stock'=> 'required',
+//                'stock_defective'=> 'required',
+//                'image' => 'required'
+//            ]);
+//
+//            if ($validator->fails()) {
+//                return response()->json(['errors' => $validator->errors()], 422);
+//            }
 
             $imageName = time().'.'.$request->file('image')->getClientOriginalExtension();
             request()->image->move(public_path('images/uploads'), $imageName);
@@ -64,8 +79,6 @@ class ProductController extends Controller
             return response($th->getMessage(), 500);
 
         }
-
-        return response("Product created successfully", 200);
     }
 
     public function update(ProductRequest $request, $id)
