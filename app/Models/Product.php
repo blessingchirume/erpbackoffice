@@ -18,7 +18,8 @@ class Product extends Model implements Auditable
         'unit_cost',
         'price',
         'stock',
-        'stock_defective'
+        'stock_defective',
+        'image_url'
     ];
 
     public function category()

@@ -40,6 +40,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'phone_number' => 'required', // Adjust the validation as per your phone number format
             'password' => 'required', // Password validation
+            'device_id' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -52,16 +53,19 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid phone number or password'], 401);
         }
 
+        if ($user->device_id && $user->device_id !== $request->get('device_id')) {
+            return response()->json(['message' => 'Account is already associated with another device.'], 403);
+        }
+
+        if (!$user->device_id) {
+            $user->device_id = $request->get('device_id');
+            $user->save();
+        }
+
         $user->load(['company']);
 
         // Create a token for the user
         $token = $user->createToken('API Token')->accessToken;
-
-//        return response()->json([
-//            'message' => 'Login successful',
-//            'access_token' => $token,
-//            'token_type' => 'Bearer',
-//        ]);
 
         return response()->json(["success" => ["userData" => $user, "token" => $token], "error" => null]);
 
