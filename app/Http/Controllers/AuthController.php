@@ -70,6 +70,7 @@ class AuthController extends Controller
         return response()->json(["success" => ["userData" => $user, "token" => $token], "error" => null]);
 
     }
+    
 
     public function update(Request $request)
     {
@@ -98,9 +99,25 @@ class AuthController extends Controller
         }
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        # code...
+
+        $user = User::find(Auth::user()->id);
+        $user->device_id = null;
+
+
+        // invalidate passport token 
+
+        $token = $request->user()->token();
+
+        // Revoke the token
+        $token->revoke();
+
+        $user->save();
+    
+        // Auth::logout();
+    
+        return response()->json(['message' => 'Logged out successfully'], 200);
     }
 
     public function passwordReset(Request $request)
