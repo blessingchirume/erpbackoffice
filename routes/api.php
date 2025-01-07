@@ -48,6 +48,7 @@ Route::post('/forgot-password', [AuthController::class, 'passwordReset']);
 
 Route::post('/tenants/register', [ApiCompanyController::class, 'store']);
 
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 
 Route::group(['middleware' => ['auth:api', 'database']], function () {
 
