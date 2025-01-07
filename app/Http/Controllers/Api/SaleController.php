@@ -18,7 +18,7 @@ class SaleController extends Controller
 {
     public function index()
     {
-        $sales = Sale::whereDate('created_at', '=', date('Y/m/d'))->where('shop_id', Auth::user()->shop->id)->get()->map(function ($sale) {
+        $sales = Sale::whereDate('created_at', '=', date('Y/m/d'))->where('shop_id', Auth::user()->shop->id ?? 1)->get()->map(function ($sale) {
             return [
                 "employee" => $sale->user->name,
                 "client" => $sale->client->name,
