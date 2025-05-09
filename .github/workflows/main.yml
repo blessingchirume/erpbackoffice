@@ -26,18 +26,18 @@ jobs:
 
       - name: Deploy files via rsync
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz \
+          sshpass -p "8k79LZyt9LKg" rsync -avz \
           --exclude='.git' \
           --exclude='.github' \
           --exclude='node_modules' \
           --exclude='.env' \
           -e "ssh -o StrictHostKeyChecking=no" \
-          ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/var/www/laravel-app
+          ./ root@95.111.246.245:/var/www/laravel-app
 
       - name: Run deployment commands
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
-          ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << EOF
+          sshpass -p "8k79LZyt9LKg" ssh -o StrictHostKeyChecking=no \
+          root@95.111.246.245 << EOF
             cd /var/www/laravel-app
             if [ ! -f .env ]; then
               cp .env.example .env
