@@ -15,8 +15,8 @@ jobs:
       - name: Install dependencies
         run: |
           composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-          npm install --omit=dev
-          npm run prod
+#          npm install --omit=dev
+#          npm run prod
 
       - name: Install rsync and sshpass
         run: sudo apt-get update && sudo apt-get install -y rsync sshpass
