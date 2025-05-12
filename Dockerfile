@@ -25,6 +25,11 @@ RUN composer install --ignore-platform-req=*
 
 # # Cache Laravel config to improve performance
 # RUN php artisan config:cache
+RUN php artisan key:generate
+
+# Cache Laravel config to improve performance
+
+RUN php artisan  migrate
 
 # Expose port 8080
 EXPOSE 7272
