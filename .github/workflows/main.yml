@@ -14,9 +14,9 @@ jobs:
           password: ${{secrets.DEV_PASSWORD}}
           script: |
             cd /
-            git clone  https://flanchoooo:${{secrets.TOKEN}}@github.com/EazzyPay/retailmate-core
-            cd retailmate-core
-            git checkout blessing-mobile-bundle-fixes
+            git clone  hhttps://github.com/blessingchirume/erpbackoffice.git
+            cd erpbackoffice
+            git checkout main
             docker stop retailmate-core
             docker rm retailmate-core
             docker rmi retailmate-core
