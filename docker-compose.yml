@@ -30,6 +30,7 @@ services:
             - laravel-network
 
     database:
+
         image: mysql:8.0
         container_name: database-prod
         restart: unless-stopped
